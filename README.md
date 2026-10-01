@@ -61,6 +61,15 @@ Modelo:
 
 Apartados: `respuestas.m` y `p1_…` a `p6_…` (ver arriba).
 
+Extensiones a otros materiales (opcionales, no forman parte del examen):
+
+| Fichero | Contenido |
+|---|---|
+| `ext_cu111.m` | el mismo análisis aplicado a Cu(111): ajusta `V0` a la brecha L medida y predice la penetración del estado de Shockley |
+| `ext_Fsl.m` | `F(E)` generalizada con masas efectivas distintas en pozo y barrera (condición de BenDaniel-Duke); se reduce a la ecuación (10) si `mw = mb` |
+| `ext_minibanda.m` | bordes y ancho de la minibanda `n` de una superred |
+| `ext_superred.m` | superred GaAs/AlAs y GaAs/AlGaAs a lo largo de [001]: minibandas de electrones y huecos y energías de transición |
+
 `main.m` y `mian.mlx` son los borradores iniciales y se conservan solo como referencia; el
 punto de entrada es `kpmain.m` + `respuestas.m`.
 
@@ -93,3 +102,42 @@ Resultados obtenidos con `respuestas` (`a = 2.3383 Å`):
    punto de inflexión (`E = 6.689 eV`) y valores negativos hacia el techo de la banda
    (`-0.0042`). El cambio de signo significa que el momento ganado del campo se transfiere
    a la red: el estado se comporta como una carga positiva (hueco).
+
+## Extensiones a otros materiales
+
+### Cu(111) — `ext_cu111.m`
+
+Mismo cálculo que el examen (fcc, dirección [111]) cambiando solo `a = 3.615/sqrt(3) = 2.0871 Å`
+y `V0`. Se ajusta `V0 = 8.03 eV` para reproducir el ancho medido de la brecha L2'-L1
+(de `-0.9` a `+4.2 eV` respecto a `E_F`) y, sin más parámetros libres, el modelo predice que
+el estado de Shockley medido en `E - E_F = -0.435 eV` penetra `1/|Im k| = 7.36 Å`, es decir
+**3.5 capas (111)**.
+
+Referencias para verificar:
+
+- N. V. Smith, [Phys. Rev. B **32**, 3549 (1985)](https://doi.org/10.1103/PhysRevB.32.3549) —
+  análisis de electrón casi libre de cinco brechas del Cu, entre ellas la del Cu(111).
+- S. D. Kevan y R. H. Gaylord, [Phys. Rev. Lett. **57**, 2975 (1986)](https://doi.org/10.1103/PhysRevLett.57.2975)
+  y [Phys. Rev. B **36**, 5809 (1987)](https://doi.org/10.1103/PhysRevB.36.5809) — longitud de
+  decaimiento del estado de superficie medida en función de la energía dentro de la brecha
+  (la curva de `imk(E)`) y masa efectiva de la banda compleja.
+- F. Reinert *et al.*, [Phys. Rev. B **63**, 115415 (2001)](https://doi.org/10.1103/PhysRevB.63.115415) —
+  dispersión del estado de Shockley en Cu(111), Ag(111) y Au(111) por ARPES.
+
+### Superred de semiconductores [001] — `ext_superred.m`
+
+En una superred el potencial de Kronig-Penney es literalmente el que se fabrica por epitaxia.
+Requiere masas efectivas distintas en pozo y barrera (`ext_Fsl.m`). Para
+GaAs(4.1 nm)/AlAs(0.90 nm) el modelo da minibandas `e1` de 60.6 meV y `hh1` de 6.4 meV.
+
+Referencias para verificar:
+
+- R. Dingle, A. C. Gossard y W. Wiegmann, [Phys. Rev. Lett. **34**, 1327 (1975)](https://doi.org/10.1103/PhysRevLett.34.1327) —
+  primera observación de la formación de minibandas.
+- [Phys. Rev. B **49**, 1809 (1994)](https://doi.org/10.1103/PhysRevB.49.1809) — "excelente acuerdo"
+  entre las energías de transición observadas y los anchos de minibanda del modelo KP.
+- [J. Appl. Phys. **59**, 3835 (1986)](https://doi.org/10.1063/1.336720) — KP frente a
+  fotoluminiscencia y PLE, y sensibilidad al offset de banda.
+- Precaución: con barreras de AlAs de menos de ~1.5 nm hay mezcla Γ-X que el KP simple no
+  contiene ([Phys. Rev. Lett. **63**, 2284 (1989)](https://doi.org/10.1103/PhysRevLett.63.2284),
+  [Phys. Rev. B **43**, 9951 (1991)](https://doi.org/10.1103/PhysRevB.43.9951)).
