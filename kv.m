@@ -1,11 +1,14 @@
-function ik = kv(E)
-    
-    global me hbar V0 a d
-    s = a-d;
+% kv
+% kv(E) despeja k de la ecuacion (10): k = acos(F(E))/a.
+%
+% El resultado es complejo en general: dentro de una banda |F| <= 1 y k es real
+% (0 <= k <= pi/a, esquema de zona reducida); dentro de una brecha |F| > 1 y
+% acos devuelve una parte imaginaria, que es la que describe los estados de
+% superficie (ecuacion 13).
+function [res] = kv(E)
 
-    alpha = sqrt( 2*me.*E/hbar^2   );
-    beta =  sqrt( 2*me.*(E-V0)/hbar^2   );
+global a
 
-    F = cos(alpha.*d).*cos(beta.*s) - ((beta.^2 + alpha.^2)./(2.*alpha.*beta)).*sin(alpha.*d).*sin(beta.*s);
-    ik = acos(F) ./ a;
+res = acos(F(E))/a;
+
 end

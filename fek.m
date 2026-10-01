@@ -1,10 +1,10 @@
-% Free electons model exact
+% fek
+% Estructura de bandas exacta de electrones libres: k(E) = sqrt(2 me E/hbar^2),
+% es decir la parabola E = hbar^2 k^2/(2 me) en esquema de zona extendida.
+function [res] = fek(E)
 
-function fekE = fek(E)
+global me hbar
 
-    global me hbar
-
-    fekE = sqrt(2*me.*E/hbar^2);
+res = sqrt(2*me*E)/hbar;
 
 end
-
