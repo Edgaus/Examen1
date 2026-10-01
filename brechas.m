@@ -10,15 +10,20 @@
 %   bandas(i,:) = [Einf Esup] de la banda i
 %   gaps(i,:)   = [Einf Esup] de la brecha entre las bandas i e i+1
 %
-% El tercer argumento (opcional) es el numero de puntos de la malla inicial.
-function [bandas, gaps] = brechas(Emin, Emax, npts)
+% El tercer argumento (opcional) es el numero de puntos de la malla inicial y el
+% cuarto un handle a la funcion F que se quiera usar, por si se trabaja con una
+% version generalizada del modelo (por defecto se usa F.m, la ecuacion 10).
+function [bandas, gaps] = brechas(Emin, Emax, npts, Fh)
 
-if nargin < 3
+if nargin < 3 || isempty(npts)
     npts = 200001;
+end
+if nargin < 4
+    Fh = @F;
 end
 
 Eg  = linspace(Emin, Emax, npts);
-per = abs(F(Eg)) <= 1;                 % 1 = permitido, 0 = prohibido
+per = abs(Fh(Eg)) <= 1;                % 1 = permitido, 0 = prohibido
 
 bandas = [];
 j = 1;
@@ -34,13 +39,13 @@ while j <= npts
         if j0 == 1
             Einf = Eg(1);
         else
-            Einf = bordebanda(Eg(j0-1), Eg(j0));
+            Einf = bordebanda(Eg(j0-1), Eg(j0), Fh);
         end
         % Borde superior: entre el ultimo permitido y el primer prohibido
         if j1 == npts
             Esup = Eg(npts);
         else
-            Esup = bordebanda(Eg(j1+1), Eg(j1));
+            Esup = bordebanda(Eg(j1+1), Eg(j1), Fh);
         end
 
         bandas = [bandas; Einf Esup];
@@ -59,11 +64,11 @@ end
 end
 
 % Biseccion de |F(E)| - 1 entre Eprohibida (|F|>1) y Epermitida (|F|<=1).
-function [Eb] = bordebanda(Eprohibida, Epermitida)
+function [Eb] = bordebanda(Eprohibida, Epermitida, Fh)
 
 for it = 1:1:80
     Em = 0.5*(Eprohibida + Epermitida);
-    if abs(F(Em)) > 1
+    if abs(Fh(Em)) > 1
         Eprohibida = Em;
     else
         Epermitida = Em;
