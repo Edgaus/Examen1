@@ -1,6 +1,16 @@
 % main.m
 % Estructura de bandas de Al [111] con el modelo de Kronig-Penney.
-% Equivalente al live script main.mlx, para incluirlo en el apendice.
+% Equivalente al live script main.mlx.
+%
+% Usa el k.m, kv.m, fek.m y bordes.m de ESTA carpeta (addpath -begin),
+% para no tomar un k.m viejo que este mas arriba en el path de MATLAB.
+
+here = fileparts(mfilename('fullpath'));
+if isempty(here), here = pwd; end
+addpath(here, '-begin');
+
+figdir = fullfile(here, 'figures');
+if ~exist(figdir, 'dir'), mkdir(figdir); end
 
 global me hbar V0 a d
 
@@ -14,20 +24,19 @@ set(groot, 'defaultLineLineWidth', 2)
 set(groot, 'defaultAxesLineWidth', 1)
 set(groot, 'defaultAxesFontSize', 12)
 
-if ~exist('figures','dir'), mkdir('figures'); end
-
 %% Electron libre: zona reducida y zona extendida
 V0 = 0;
 E = 0.1:0.01:30;
 
-[rk, ~, ke] = k(E);
+rk = k(E);                 % una sola salida: vale con cualquier k.m
+ke = kextend(rk);          % zona extendida, local a este script
 kk  = [-fliplr(rk), NaN, rk];
 EE  = [ fliplr(E),  NaN,  E];
 kke = [-fliplr(ke), NaN, ke];
 kl  = fek(E);
 kkl = [-fliplr(kl), NaN, kl];
 
-figure
+fig = figure;
 t = tiledlayout(2,1,'TileSpacing','compact','Padding','compact');
 sgtitle(t, 'Electrón libre')
 nexttile
@@ -44,13 +53,13 @@ ylabel('E (eV)')
 title('(b) Zona extendida')
 legend('Kronig-Penney desplegado', 'Electrón libre exacto', 'Location', 'best')
 grid on
-print(gcf, 'figures/fig_libre.png', '-dpng', '-r200');
-max(abs(ke - fek(E)))
+guardarfig(fig, fullfile(figdir, 'fig_libre.png'));
+fprintf('max |k extendido - fek| = %.3e\n', max(abs(ke - fek(E))))
 
 %% Electron casi libre
 a = 4.05/sqrt(3);
 d = a/2;
-Eborde = (hbar^2/(2*me))*(pi/a)^2
+Eborde = (hbar^2/(2*me))*(pi/a)^2;
 fprintf('Eborde = %.4f eV;  V0 = 0.1 eV es el %.2f %% de esa escala.\n', ...
         Eborde, 100*0.1/Eborde)
 
@@ -70,7 +79,7 @@ rk = k(E);
 kk = [-fliplr(rk), NaN, rk];
 EE = [ fliplr(E),  NaN,  E];
 
-figure
+fig = figure;
 t = tiledlayout(2,1,'TileSpacing','compact','Padding','compact');
 sgtitle(t, 'Electrón casi libre, V_0 = 0.1 eV')
 nexttile
@@ -90,7 +99,7 @@ title(sprintf('(b) Zoom: E_g = %.4f eV  (2|V_1| = %.4f eV)', ...
 xlim([-pi/a pi/a])
 ylim([Et-0.15, E2+0.15])
 grid on
-print(gcf, 'figures/fig_casilibre.png', '-dpng', '-r200');
+guardarfig(fig, fullfile(figdir, 'fig_casilibre.png'));
 
 %% Potencial fuerte y estados de superficie
 a  = 4.05/sqrt(3);
@@ -113,7 +122,7 @@ kk  = [-fliplr(rk), NaN, rk];
 kki = [-fliplr(ik), NaN, ik];
 EE  = [ fliplr(E),  NaN,  E];
 
-figure
+fig = figure;
 t = tiledlayout(2,1,'TileSpacing','compact','Padding','compact');
 sgtitle(t, sprintf('Potencial fuerte, V_0 = 5 eV, d = 1 Å  (E_g aumento x%.1f)', Eg/Eg_nfe))
 nexttile
@@ -132,7 +141,7 @@ ylabel('E (eV)')
 title('(b) Estados de superficie: Re k e Im k')
 legend('Re k', 'Im k', 'Location', 'southeast')
 grid on
-print(gcf, 'figures/fig_fuerte.png', '-dpng', '-r200');
+guardarfig(fig, fullfile(figdir, 'fig_fuerte.png'));
 
 Ec = (Et + E2)/2;
 [~, kappa] = k(Ec);
@@ -155,7 +164,7 @@ rk = k(E);
 kk = [-fliplr(rk), NaN, rk];
 vv = [-fliplr(vgE), NaN, vgE];
 
-figure
+fig = figure;
 t = tiledlayout(2,1,'TileSpacing','compact','Padding','compact');
 sgtitle(t, 'Primera banda, V_0 = 0.1 eV')
 nexttile
@@ -173,4 +182,47 @@ xlabel('E (eV)')
 ylabel('m^*/m_e')
 title('(b) Masa efectiva')
 grid on
-print(gcf, 'figures/fig_vgmasa.png', '-dpng', '-r200');
+guardarfig(fig, fullfile(figdir, 'fig_vgmasa.png'));
+
+%% --------- funciones locales de este script ---------
+
+function ke = kextend(kr)
+% Despliega kr (zona reducida) al esquema extendido.
+    global a
+    ke = nan(size(kr));
+    kb = pi/a;
+    val = reshape(find(~isnan(kr)), 1, []);
+    if isempty(val), return; end
+    corte = [1, reshape(find(diff(val) ~= 1) + 1, 1, []), numel(val) + 1];
+    n = 0;
+    for t = 1:numel(corte) - 1
+        tramo = val(corte(t):corte(t+1) - 1);
+        if numel(tramo) >= 3
+            s = sign(diff(kr(tramo)));
+            s(s == 0) = 1;
+            sub = [1, reshape(find(diff(s) ~= 0) + 1, 1, []), numel(tramo) + 1];
+        else
+            sub = [1, numel(tramo) + 1];
+        end
+        for u = 1:numel(sub) - 1
+            idx = tramo(sub(u):sub(u+1) - 1);
+            n = n + 1;
+            if mod(n, 2) == 1
+                ke(idx) = (n-1)*kb + kr(idx);
+            else
+                ke(idx) = n*kb - kr(idx);
+            end
+        end
+    end
+end
+
+function guardarfig(fig, archivo)
+% exportgraphics sobre el handle, no print(gcf): print dispara el
+% exportHelper de la barra de la figura y truena si la figura ya no vale.
+    if ~isgraphics(fig, 'figure'), return; end
+    try
+        exportgraphics(fig, archivo, 'Resolution', 200);
+    catch ME
+        warning('No se pudo guardar %s: %s', archivo, ME.message);
+    end
+end
