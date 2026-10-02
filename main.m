@@ -2,8 +2,7 @@
 % Estructura de bandas de Al [111] con el modelo de Kronig-Penney.
 % Equivalente al live script main.mlx.
 %
-% Usa el k.m, kv.m, fek.m y bordes.m de ESTA carpeta (addpath -begin),
-% para no tomar un k.m viejo que este mas arriba en el path de MATLAB.
+% Usa k.m, kv.m, fek.m, bordes.m y kext.m de ESTA carpeta.
 
 here = fileparts(mfilename('fullpath'));
 if isempty(here), here = pwd; end
@@ -28,8 +27,8 @@ set(groot, 'defaultAxesFontSize', 12)
 V0 = 0;
 E = 0.1:0.01:30;
 
-rk = k(E);                 % una sola salida: vale con cualquier k.m
-ke = kextend(rk);          % zona extendida, local a este script
+rk = k(E);
+ke = kext(E);              % zona extendida (archivo kext.m)
 kk  = [-fliplr(rk), NaN, rk];
 EE  = [ fliplr(E),  NaN,  E];
 kke = [-fliplr(ke), NaN, ke];
@@ -184,37 +183,7 @@ title('(b) Masa efectiva')
 grid on
 guardarfig(fig, fullfile(figdir, 'fig_vgmasa.png'));
 
-%% --------- funciones locales de este script ---------
-
-function ke = kextend(kr)
-% Despliega kr (zona reducida) al esquema extendido.
-    global a
-    ke = nan(size(kr));
-    kb = pi/a;
-    val = reshape(find(~isnan(kr)), 1, []);
-    if isempty(val), return; end
-    corte = [1, reshape(find(diff(val) ~= 1) + 1, 1, []), numel(val) + 1];
-    n = 0;
-    for t = 1:numel(corte) - 1
-        tramo = val(corte(t):corte(t+1) - 1);
-        if numel(tramo) >= 3
-            s = sign(diff(kr(tramo)));
-            s(s == 0) = 1;
-            sub = [1, reshape(find(diff(s) ~= 0) + 1, 1, []), numel(tramo) + 1];
-        else
-            sub = [1, numel(tramo) + 1];
-        end
-        for u = 1:numel(sub) - 1
-            idx = tramo(sub(u):sub(u+1) - 1);
-            n = n + 1;
-            if mod(n, 2) == 1
-                ke(idx) = (n-1)*kb + kr(idx);
-            else
-                ke(idx) = n*kb - kr(idx);
-            end
-        end
-    end
-end
+%% --------- funcion local ---------
 
 function guardarfig(fig, archivo)
 % exportgraphics sobre el handle, no print(gcf): print dispara el
