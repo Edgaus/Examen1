@@ -23,7 +23,7 @@
 \maketitle
 
 \setcounter{tocdepth}{2}
-%\tableofcontents
+
 
 \section{Introducción}
 
@@ -37,11 +37,20 @@ En este trabajo se calcula la estructura de bandas de una cadena monoatómica de
 
 \section{Metodología}
 
-Las simulaciones se hicieron en MATLAB R2024b. Las longitudes se expresan en ångströms, el vector de onda en \AA$^{-1}$ y la energía en eV. Con ese sistema de unidades, la masa del electrón y $\hbar$ se introducen con los valores numéricos de la práctica, de modo que $k=\sqrt{2m_e E}/\hbar$ queda directamente en \AA$^{-1}$. El periodo del modelo no es la constante de red cúbica del aluminio, $a_{\mathrm{Al}}=4.05$~\AA, sino la distancia entre planos $(111)$:
+\subsection{Codigo}
+
+
+Las simulaciones se hicieron en MATLAB R2024b. Los codigos elaborados en este trabajo para modelar la estructura de bandas bajo la aproximacion de un solo electron del Al en la direccion (111) está elaborado a lo largo de 5 scripts. Los scripts se pueden encontrar al final de este documento en la seccion de $Apendice$. Hay 5 codigos, Main.mlx es un live script, inspirado en los Jupyter notebooks por python, donde cada seccion analiza la estructura de bandas en distintos escenarios y manda a llamar a los otros scripts. En particular k.m que toma un array de energia y regresa la estrucutryra de bandas, para ello emplea kv.m que resuleve las ecuaciones analiticas $\ref{eq:dispersion}$ del Modelo Kroning.Penney, el cual se detallara en la siguiente seccion. Mientras que el script para el modelo del electron libre está en el script fek.m. A su vez se generó, un archivo extra, llamado bordes.m que analiza el array que contienen la estrucutura de bandas y regresa aquellos valores de k que se encuentran en el borde de las band gaps que se llegan a formar para calcular la energi adel gap $E_g$.
+
+
+
+Las longitudes se expresan en ångströms, el vector de onda en \AA$^{-1}$ y la energía en eV. Con ese sistema de unidades, la masa del electrón y $\hbar$ se introducen con los valores numéricos de la práctica, de modo que $k=\sqrt{2m_e E}/\hbar$ queda directamente en \AA$^{-1}$. El periodo del modelo no es la constante de red cúbica del aluminio, $a_{\mathrm{Al}}=4.05$~\AA, sino la distancia entre planos $(111)$:
 \begin{equation}
 a=\frac{a_{\mathrm{Al}}}{\sqrt{3}}.
 \end{equation}
-El script sigue el desarrollo que se resume a continuación.
+
+
+A continuacion se muestran los modelos empleados por los codigos para el calculo de estrucutra de bandas.
 
 \subsection{Modelo de Kronig--Penney}
 
@@ -91,22 +100,18 @@ En cada región la solución general es una combinación de ondas planas. Para $
 \end{equation}
 Si $E<V_0$, $\beta$ es imaginario: en la barrera las ondas pasan a ser exponenciales reales. La relación de dispersión que se obtiene más abajo sigue siendo válida en ese caso.
 
-Los coeficientes $A$, $B$, $C$ y $D$ quedan ligados por las condiciones de frontera. Tanto $\psi$ como $d\psi/dx$ son continuas en la interfaz entre las regiones~I y~II. La normalización,
-\begin{equation}
-\int_{0}^{L}\psi^{*}\psi\,\mathrm{d}x=1,
-\end{equation}
-solo fija la escala global de la función de onda; no determina las energías permitidas.
 
 Como el potencial es periódico, el teorema de Bloch escribe cada estado estacionario en la forma
 \begin{equation}
 \psi_k(x)=u_k(x)\exp(ikx),
 \label{eq:bloch}
 \end{equation}
-donde $u_k(x)$ tiene la periodicidad del cristal, $u_k(x)=u_k(x+a)$. De aquí se sigue que una traslación de un periodo solo multiplica la función de onda por una fase,
-\begin{equation}
-\psi_k(x+a)=\psi_k(x)\exp(ika),
-\end{equation}
-y lo mismo ocurre con su derivada. Continuidad y condición de Bloch forman un sistema homogéneo para $A$, $B$, $C$ y $D$. Hay soluciones distintas de la trivial solo si el determinante se anula, y esa condición relaciona la energía con $k$:
+
+donde $u_k(x)$ tiene la periodicidad del cristal, $u_k(x)=u_k(x+a)$. 
+
+Los coeficientes $A$, $B$, $C$ y $D$ quedan ligados por lo anterior y por las condiciones de frontera. Tanto $\psi$ como $d\psi/dx$ son continuas en la interfaz entre las regiones~I y~II. Llegando a la siguiente relación
+
+
 \begin{equation}
 \begin{aligned}
 \cos(ka)&=F,\\
@@ -140,7 +145,111 @@ V_n=\frac{1}{T}\int_{c}^{c+T}V(x)\exp(-in\omega x)\,\mathrm{d}x,
 \qquad\omega=\frac{2\pi}{T}.
 \label{eq:fourier}
 \end{equation}
-En la cadena el periodo es $T=a$, así que $\omega=2\pi/a$. En la base de ondas planas del electrón libre, $V$ solo acopla estados cuyos vectores de onda difieren en un múltiplo de $2\pi/a$. El primer coeficiente del potencial de Kronig--Penney es
+En la cadena el periodo es $T=a$, así que $\omega=2\pi/a$. En la base de ondas planas del electrón libre, $V$ solo acopla estados cuyos vectores de onda difieren en un múltiplo de $2\pi/a$. 
+
+
+
+\section{Resultados}
+
+La comparativa entre en la estrucutura de bandas del Al en la direccion (111) se muestra en la Fig. 1, en funcion de la energía generado por nuestro script k.m. La linea azul representa la estrucutra de bandas, bajo el modelo de Kroning-Penney, mientras que la linea roja punteada el modelo del electron exacto, fek.m. Se observa como la linea azul y roja estan superpuestas hasta el valor de k = 1.5. Mientras que el modelo del electron libre muestra como la energía aumenta al aumentar la magnitud de k. Mientras que el modelo de Kroning-Penney, lo que hace es que esta contenida el valor de k para valores de $-\frac{pi}{a}\leq k\leq \frac{\pi}{a}$, lo que se concoce como es la estrucutra esqumatica, al realizar la version extendida vemos como en realidad ambas curvas se supornen, haciendo que son realemnte iguales las curvas dadas por estos modelos. Notamos que en no hya energias no tengan asociado un valor de k en el plot, i.e. no hay band gap, lo cual es esperado ya que esta aproximacion no asume interaccion entre los atomos. 
+
+
+
+
+
+\section{Discusion}
+
+
+
+\section{Conclusiones}
+
+
+
+
+
+\section{Referencias}
+
+
+\begin{thebibliography}{99}
+\bibitem[Kronig y Penney(1931)]{kronig1931}
+R.~de~L.~Kronig and W.~G.~Penney,
+Proc.~R.~Soc.~Lond.~A \textbf{130}, 499 (1931).
+
+\bibitem[Kittel(1996)]{kittel}
+C.~Kittel, \emph{Introduction to Solid State Physics}, 7.\textsuperscript{a}~ed.
+(John Wiley \& Sons, New York, 1996).
+\end{thebibliography}
+
+
+
+
+\section{Apendice}
+
+\subsection{Fourier}
+
+\noindent Podemos definir el potencial de Kronig-Penney:
+\begin{equation*}
+V(x) = \begin{cases} 
+V_0, & 0 \leq x \leq s = a-d \\ 
+0, & a-d < x \leq a 
+\end{cases}
+\end{equation*}
+
+\noindent La componente de Fourier se define como:
+\begin{equation*}
+V_1 = \frac{1}{a} \int_{c}^{c+a} V(x) \exp\left(-\frac{i 2\pi x}{a}\right) dx
+\end{equation*}
+
+\noindent Con $c=0$ y partiendo con la definición anterior:
+\begin{equation*}
+V_1 = \frac{1}{a} \int_{0}^{a-d} V_0 \exp\left(-\frac{i 2\pi}{a}x\right) dx
+\end{equation*}
+
+\noindent Haciendo el cambio de variable:
+\begin{align*}
+u &= -\frac{i 2\pi}{a}x \\
+u(0) &= 0 \\
+u(a-d) &= -\frac{i 2\pi}{a}(a-d) = -i 2\pi \left(1 - \frac{d}{a}\right)
+\end{align*}
+
+\noindent Resolviendo la integral:
+\begin{align*}
+V_1 &= i \frac{V_0}{2\pi} \int_{0}^{-i 2\pi\left(1 - \frac{d}{a}\right)} \exp(u) du \\
+&= i \frac{V_0}{2\pi} \exp(u) \bigg|_{0}^{-i 2\pi\left(1 - \frac{d}{a}\right)} \\
+&= i \frac{V_0}{2\pi} \left[ \exp(-i 2\pi) \exp\left(i 2\pi \frac{d}{a}\right) - 1 \right] \\
+&= \frac{i V_0}{2\pi} \left[ \cos\left(2\pi \frac{d}{a}\right) - 1 + i \sin\left(2\pi \frac{d}{a}\right) \right] \\
+&= \frac{V_0}{2\pi} \left[ -\sin\left(2\pi \frac{d}{a}\right) + i \left(\cos\left(2\pi \frac{d}{a}\right) - 1\right) \right]
+\end{align*}
+
+\noindent Luego, calculamos la magnitud $|V_1|$:
+\begin{align*}
+|V_1| &= \frac{V_0}{2\pi} \left[ \sin^2\left(2\pi \frac{d}{a}\right) + \left(\cos\left(2\pi \frac{d}{a}\right) - 1\right)^2 \right]^{1/2} \\
+&= \frac{V_0}{2\pi} \left[ \sin^2\left(2\pi \frac{d}{a}\right) + \cos^2\left(2\pi \frac{d}{a}\right) + 1 - 2\cos\left(2\pi \frac{d}{a}\right) \right]^{1/2} \\
+&= \frac{V_0}{2\pi} \left[ 2 - 2\cos\left(2\pi \frac{d}{a}\right) \right]^{1/2} \\
+&= \frac{V_0}{\pi} \left[ \frac{1 - \cos\left(2\pi \frac{d}{a}\right)}{2} \right]^{1/2}
+\end{align*}
+
+\noindent Como:
+\begin{equation*}
+\cos(2x) = \cos^2 x - \sin^2 x = 1 - 2\sin^2 x
+\end{equation*}
+
+\noindent Finalmente:
+\begin{equation*}
+\sin x = \sqrt{\frac{1 - \cos(2x)}{2}}
+\end{equation*}
+
+\begin{equation*}
+|V_1| = \frac{V_0}{\pi} \left| \sin\left(\pi \frac{d}{a}\right) \right|
+\end{equation*}
+
+\vspace{0.5cm}
+\noindent Demostrando que en efecto es proporcional a $V_0$.
+
+
+\subsection{Parámetro de red}
+
+El primer coeficiente del potencial de Kronig--Penney es
 \begin{equation}
 V_1=\frac{1}{a}\int_{c}^{c+a}V_{\mathrm{KP}}(x)
 \exp\!\left(-i\frac{2\pi x}{a}\right)\mathrm{d}x.
@@ -148,15 +257,10 @@ V_1=\frac{1}{a}\int_{c}^{c+a}V_{\mathrm{KP}}(x)
 \end{equation}
 En la frontera de la zona, $k=\pi/a$, ese acoplamiento abre la primera brecha. Su anchura es, aproximadamente, $2|V_1|$ \cite{kittel}.
 
-\section{Resultados}
 
-\begin{thebibliography}{99}
-\bibitem[Kronig y Penney(1931)]{kronig1931}
-R.~de~L.~Kronig and W.~G.~Penney,
-Proc.~R.~Soc.~Lond.~A \textbf{130}, 499 (1931).
-\bibitem[Kittel(1996)]{kittel}
-C.~Kittel, \emph{Introduction to Solid State Physics}, 7.\textsuperscript{a}~ed.
-(John Wiley \& Sons, New York, 1996).
-\end{thebibliography}
+
+
+
+
 
 \end{document}
