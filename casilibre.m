@@ -27,6 +27,7 @@ for v = [0.1 0.2]
 end
 
 V0 = 0.1;
+[~, Et, E2] = bordes(E);
 rk = k(E);
 
 % La rama k < 0 es el reflejo de la positiva, porque E(k) = E(-k).
@@ -34,10 +35,23 @@ rk = k(E);
 kk = [-fliplr(rk), NaN, rk];
 EE = [ fliplr(E),  NaN,  E];
 
+% A escala 0-30 eV la brecha de ~0.06 eV no se distingue: es el 0.2 % del eje.
 figure
 plot(kk, EE, 'b')
 xlabel('k (Å^{-1})')
 ylabel('E (eV)')
 title('Estructura de bandas: electrón casi libre, V_0 = 0.1 eV')
 xlim([-pi/a pi/a])
+grid on
+
+% El guion pide zoom en el borde de zona para medir E_g.
+figure
+plot(kk, EE, 'b')
+yline(Et, 'r--')
+yline(E2, 'r--')
+xlabel('k (Å^{-1})')
+ylabel('E (eV)')
+title(sprintf('Zoom: primera brecha E_g = %.4f eV', E2-Et))
+xlim([-pi/a pi/a])
+ylim([Et-0.15, E2+0.15])
 grid on
