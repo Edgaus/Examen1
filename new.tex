@@ -90,13 +90,8 @@ El modelo de Kronig--Penney trata un solo electrón en un cristal unidimensional
 
 \begin{figure}[htbp]
 \centering
-\IfFileExists{../../../../Pictures/Screenshots/Screenshot 2026-10-01 220916.png}{%
-  \includegraphics[width=0.72\linewidth]{../../../../Pictures/Screenshots/Screenshot 2026-10-01 220916.png}%
-}{%
-  \fbox{\parbox{0.72\linewidth}{\centering\vspace{2.5em}
-  Potencial periódico de Kronig--Penney\vspace{2.5em}}}%
-}
-\caption{Potencial del modelo de Kronig--Penney. La región~I, entre iones, es una barrera de altura $V_0$ y ancho $s$. La región~II, sobre los iones, es un pozo de potencial nulo y ancho $d$. El periodo es $a=d+s$.}
+\includegraphics[scale=0.5]{Figures/fig_potencial.png}
+\caption{Potencial periódico del modelo de Kronig--Penney. La región~I es la barrera de altura $V_0$ y ancho $s$; la región~II es el pozo $V=0$ de ancho $d$. El periodo es $a=d+s$.}
 \label{fig:kp}
 \end{figure}
 
@@ -208,19 +203,30 @@ La figura~\ref{fig:libre} compara, para $V_0=0$ y $d=a/2$, la banda de Kronig--P
 
 
 
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.6]{Figures/fig_libre.png}
+\caption{Electrón libre, $V_0=0$, $d=a/2$. (a)~Zona reducida: Kronig--Penney frente a $E=\hbar^2k^2/(2m_e)$. (b)~Zona extendida: las dos curvas coinciden.}
+\label{fig:libre}
+\end{figure}
+
+
+
 
 
 \subsection{Electrón casi libre}
 
 Al subir la barrera a $V_0=0.1$~eV aparece un hueco en $k=\pm\pi/a$ (figura~\ref{fig:casilibre}). Con $V_0=0.2$~eV el hueco se duplica. La tabla~\ref{tab:gaps} compara $E_g$ con $2|V_1|$. El cociente es $1.001$ en ambos casos.
 
-\begin{figure}[htbp]
+\begin{figure}[hbtp]
 \centering
-\fbox{\parbox{0.72\linewidth}{\centering\vspace{2.5em}
-Primera brecha con $V_0=0.1$~eV\vspace{2.5em}}}
-\caption{Estructura de bandas del electrón casi libre, $V_0=0.1$~eV, $d=a/2$. La primera brecha se abre en el borde de zona.}
+\includegraphics[scale=0.6]{Figures/fig_casilibre.png}
+\caption{Electrón casi libre, $V_0=0.1$~eV, $d=a/2$. (a)~Estructura de bandas. (b)~Zoom de la primera brecha en $k=\pm\pi/a$.}
 \label{fig:casilibre}
 \end{figure}
+
+
+
 
 \begin{table}[htbp]
 \centering
@@ -239,51 +245,51 @@ $5.0$ & $3.140$  & $3.101$  & $1.013$ \\
 
 \subsection{Potencial fuerte}
 
-Con $V_0=5$~eV y $d=1$~\AA\ la primera banda corre de $2.685$ a $8.120$~eV y la primera brecha de $8.120$ a $11.260$~eV, con $E_g=3.140$~eV (figura~\ref{fig:fuerte}). Respecto al caso $V_0=0.1$~eV, esa brecha crece en un factor $49$. El fondo de la banda ya no está en $E=0$: el electrón queda ligado al pozo.
+Con $V_0=5$~eV y $d=1$~\AA\ la primera banda corre de $2.685$ a $8.120$~eV y la primera brecha de $8.120$ a $11.260$~eV, con $E_g=3.140$~eV (figura~\ref{fig:fuerte}a). Respecto al caso $V_0=0.1$~eV, esa brecha crece en un factor $49$. El fondo de la banda ya no está en $E=0$: el electrón queda ligado al pozo.
 
-\begin{figure}[htbp]
+\begin{figure}[hbtp]
 \centering
-\fbox{\parbox{0.72\linewidth}{\centering\vspace{2.5em}
-Bandas con $V_0=5$~eV, $d=1$~\AA\vspace{2.5em}}}
-\caption{Estructura de bandas con potencial fuerte. Las brechas son de varios eV y la primera banda arranca por encima de cero.}
+\includegraphics[scale=0.6]{Figures/fig_fuerte.png}
+\caption{Potencial fuerte, $V_0=5$~eV, $d=1$~\AA. (a)~Estructura de bandas. (b)~$\operatorname{Re}k$ en las bandas e $\operatorname{Im}k$ en las brechas (estados de superficie).}
 \label{fig:fuerte}
 \end{figure}
 
+
+
+
 \subsection{Estados de superficie}
 
-Dentro de las brechas, $k$ es imaginario (figura~\ref{fig:superficie}). En el centro de la primera brecha, $E=9.690$~eV,
+Dentro de las brechas, $k$ es imaginario (figura~\ref{fig:fuerte}b). En el centro de la primera brecha, $E=9.690$~eV,
 \begin{equation}
 |\operatorname{Im}k|=0.153~\text{\AA}^{-1},
 \end{equation}
 de modo que la longitud de decaimiento es $1/|\operatorname{Im}k|=6.55$~\AA, equivalentes a $2.80$ periodos de la cadena, es decir $2.80$ capas atómicas $(111)$.
 
-\begin{figure}[htbp]
-\centering
-\fbox{\parbox{0.72\linewidth}{\centering\vspace{2.5em}
-$\operatorname{Re}k$ (bandas) e $\operatorname{Im}k$ (brechas)\vspace{2.5em}}}
-\caption{Parte real e imaginaria de $k(E)$ para $V_0=5$~eV, $d=1$~\AA. $\operatorname{Im}k$ es distinta de cero solo dentro de las brechas.}
-\label{fig:superficie}
-\end{figure}
+
+
+
+
+
 
 \subsection{Velocidad de grupo y masa efectiva}
 
 En la primera banda, con $V_0=0.1$~eV, $v_g$ se anula en $k=0$ y en $k=\pm\pi/a$, y alcanza un máximo de $1.515\times 10^{16}$~\AA/s, el $0.505\,\%$ de $c$ (figura~\ref{fig:vg}). La masa efectiva, figura~\ref{fig:masa}, vale $m^*/m_e\approx +1$ cerca del fondo de la banda y cambia de signo al acercarse al techo.
 
-\begin{figure}[htbp]
+\begin{figure}[hbtp]
 \centering
-\fbox{\parbox{0.72\linewidth}{\centering\vspace{2.5em}
-$v_g(k)$ en la primera banda\vspace{2.5em}}}
-\caption{Velocidad de grupo en la primera banda. Se anula en el centro y en los bordes de la zona de Brillouin.}
+\includegraphics[scale=0.6]{Figures/fig_vgmasa.png}
+\caption{Masa efectiva $m^*/m_e$ en la primera banda, $V_0=0.1$~eV. Es positiva cerca del fondo y negativa cerca del techo.}
+\label{fig:masa}
+\end{figure}
+
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.6]{Figures/velocidadgrupo.png}
+\caption{Velocidad de grupo $v_g(k)$ en la primera banda, $V_0=0.1$~eV. Se anula en $k=0$ y en $k=\pm\pi/a$.}
 \label{fig:vg}
 \end{figure}
 
-\begin{figure}[htbp]
-\centering
-\fbox{\parbox{0.72\linewidth}{\centering\vspace{2.5em}
-$m^*(E)/m_e$ en la primera banda\vspace{2.5em}}}
-\caption{Masa efectiva normalizada a $m_e$, en función de la energía. Es positiva en el fondo de la banda y negativa cerca del techo.}
-\label{fig:masa}
-\end{figure}
 
 \section{Discusión}
 
@@ -463,14 +469,10 @@ Script principal.
 \begin{lstlisting}
 % main.m
 % Estructura de bandas de Al [111] con el modelo de Kronig-Penney.
-% Equivalente al live script main.mlx.
-%
-% Usa k.m, kv.m, fek.m, bordes.m y kext.m de ESTA carpeta.
 
 here = fileparts(mfilename('fullpath'));
 if isempty(here), here = pwd; end
 addpath(here, '-begin');
-
 figdir = fullfile(here, 'figures');
 if ~exist(figdir, 'dir'), mkdir(figdir); end
 
@@ -484,7 +486,7 @@ V0 = 0;                    % electron libre
 
 set(groot, 'defaultLineLineWidth', 2)
 set(groot, 'defaultAxesLineWidth', 1)
-set(groot, 'defaultAxesFontSize', 12)
+set(groot, 'defaultAxesFontSize', 17)
 
 %% Electron libre: zona reducida y zona extendida
 V0 = 0;
@@ -516,7 +518,7 @@ title('(b) Zona extendida')
 legend('Kronig-Penney desplegado', 'Electrón libre exacto', 'Location', 'best')
 grid on
 guardarfig(fig, fullfile(figdir, 'fig_libre.png'));
-fprintf('max |k extendido - fek| = %.3e\n', max(abs(ke - fek(E))))
+
 
 %% Electron casi libre
 a = 4.05/sqrt(3);
@@ -556,8 +558,7 @@ yline(Et, 'r--')
 yline(E2, 'r--')
 xlabel('k (Å^{-1})')
 ylabel('E (eV)')
-title(sprintf('(b) Zoom: E_g = %.4f eV  (2|V_1| = %.4f eV)', ...
-      E2-Et, 2*abs((V0/pi)*sin(pi*d/a))))
+title(sprintf('(b) Zoom'))
 xlim([-pi/a pi/a])
 ylim([Et-0.15, E2+0.15])
 grid on
@@ -586,7 +587,7 @@ EE  = [ fliplr(E),  NaN,  E];
 
 fig = figure;
 t = tiledlayout(2,1,'TileSpacing','compact','Padding','compact');
-sgtitle(t, sprintf('Potencial fuerte, V_0 = 5 eV, d = 1 Å  (E_g aumento x%.1f)', Eg/Eg_nfe))
+sgtitle(t, sprintf('Potencial fuerte'))
 nexttile
 plot(kk, EE, 'b')
 ylabel('E (eV)')
@@ -627,22 +628,24 @@ kk = [-fliplr(rk), NaN, rk];
 vv = [-fliplr(vgE), NaN, vgE];
 
 fig = figure;
-t = tiledlayout(2,1,'TileSpacing','compact','Padding','compact');
-sgtitle(t, 'Primera banda, V_0 = 0.1 eV')
+
 nexttile
 plot(kk, vv, 'b')
 yline(0, 'k:')
 xlabel('k (Å^{-1})')
 ylabel('v_g (Å/s)')
-title('(a) Velocidad de grupo')
+title( 'Velocidad de grupo')
 grid on
-nexttile
+guardarfig(fig, fullfile(figdir, 'velocidadgrupo.png'));
+fig = figure;
+
+
 plot(E, ms, 'b')
 yline(0, 'k:')
 ylim([-5 5])
 xlabel('E (eV)')
 ylabel('m^*/m_e')
-title('(b) Masa efectiva')
+title('Masa efectiva')
 grid on
 guardarfig(fig, fullfile(figdir, 'fig_vgmasa.png'));
 
