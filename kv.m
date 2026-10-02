@@ -18,5 +18,9 @@ function ik = kv(E)
     beta  = sqrt( 2*me.*(E-V0)/hbar^2   );  % region I,  barrera de ancho s
 
     F = cos(alpha.*d).*cos(beta.*s) - ((alpha.^2 + beta.^2)./(2.*alpha.*beta)).*sin(alpha.*d).*sin(beta.*s);
+    % Eq. (10) is real. For E < V0, beta is imaginario y MATLAB deja un
+    % residuo complejo en F: acos(F) sale complejo, k.m pone NaN en toda
+    % la banda y bordes truena (find vacio).
+    F = real(F);
     ik = acos(F) ./ a;
 end
