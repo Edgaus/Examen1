@@ -1,11 +1,13 @@
 function [rkvE, ikvE] = k(E)
-% k(E)  parte real de kv(E); NaN dentro de las brechas.
-% Segunda salida: parte imaginaria (estados de superficie).
-% La zona extendida va en kext.m: ke = kext(E).
-
-    kE   = kv(E);
+    
+    kE=kv(E); 
     ikvE = imag(kE);
-    rkvE = real(kE);
-    rkvE(abs(ikvE) > 1e-10) = NaN;
 
+    for j=1:1:length(kE) 
+        if (abs(kE(j)) ~= real(kE(j))) % returns NaN in 
+            kE(j)=NaN; % the band gap 
+        end
+        
+    end
+    rkvE =  kE;
 end
