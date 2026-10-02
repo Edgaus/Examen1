@@ -5,6 +5,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{physics}
+\usepackage{booktabs}
 
 \setlength{\parskip}{0pt}
 
@@ -37,20 +38,34 @@ En este trabajo se calcula la estructura de bandas de una cadena monoatómica de
 
 \section{Metodología}
 
-\subsection{Codigo}
+\subsection{Códigos}
 
+Las simulaciones se hicieron en MATLAB R2024b. El live script \texttt{main.mlx} define las constantes globales y recorre los cinco casos de la práctica. Cada caso llama a funciones auxiliares. \texttt{kv.m} evalúa la relación de dispersión~\eqref{eq:dispersion} del modelo de Kronig--Penney. \texttt{k.m} toma un arreglo de energías y devuelve $\operatorname{Re}k(E)$ e $\operatorname{Im}k(E)$; donde no hay $k$ real pone \texttt{NaN}, y con ello marca las brechas. \texttt{fek.m} calcula la parábola del electrón libre. \texttt{bordes.m} recorre esos \texttt{NaN} y localiza el fondo y el techo de la primera banda, de donde se obtiene $E_g$. Los scripts \texttt{casilibre.m}, \texttt{potencialfuerte.m}, \texttt{superficie.m} e \texttt{imk.m}, y \texttt{velocidadmasa.m}, cubren el resto de los casos. El código se recoge en el apéndice.
 
-Las simulaciones se hicieron en MATLAB R2024b. Los codigos elaborados en este trabajo para modelar la estructura de bandas bajo la aproximacion de un solo electron del Al en la direccion (111) está elaborado a lo largo de 5 scripts. Los scripts se pueden encontrar al final de este documento en la seccion de $Apendice$. Hay 5 codigos, Main.mlx es un live script, inspirado en los Jupyter notebooks por python, donde cada seccion analiza la estructura de bandas en distintos escenarios y manda a llamar a los otros scripts. En particular k.m que toma un array de energia y regresa la estrucutryra de bandas, para ello emplea kv.m que resuleve las ecuaciones analiticas $\ref{eq:dispersion}$ del Modelo Kroning.Penney, el cual se detallara en la siguiente seccion. Mientras que el script para el modelo del electron libre está en el script fek.m. A su vez se generó, un archivo extra, llamado bordes.m que analiza el array que contienen la estrucutura de bandas y regresa aquellos valores de k que se encuentran en el borde de las band gaps que se llegan a formar para calcular la energi adel gap $E_g$.
-
-
-
-Las longitudes se expresan en ångströms, el vector de onda en \AA$^{-1}$ y la energía en eV. Con ese sistema de unidades, la masa del electrón y $\hbar$ se introducen con los valores numéricos de la práctica, de modo que $k=\sqrt{2m_e E}/\hbar$ queda directamente en \AA$^{-1}$. El periodo del modelo no es la constante de red cúbica del aluminio, $a_{\mathrm{Al}}=4.05$~\AA, sino la distancia entre planos $(111)$:
+Las longitudes se expresan en ångströms, el vector de onda en \AA$^{-1}$ y la energía en eV. Con ese sistema de unidades, la masa del electrón y $\hbar$ se introducen con los valores numéricos de la práctica,
 \begin{equation}
-a=\frac{a_{\mathrm{Al}}}{\sqrt{3}}.
+m_e=5.68572\times 10^{-32},\qquad
+\hbar=6.58199\times 10^{-16},
+\end{equation}
+de modo que $k=\sqrt{2m_e E}/\hbar$ queda directamente en \AA$^{-1}$. El periodo del modelo no es la constante de red cúbica del aluminio, $a_{\mathrm{Al}}=4.05$~\AA, sino la distancia entre planos $(111)$:
+\begin{equation}
+a=\frac{a_{\mathrm{Al}}}{\sqrt{3}}=2.3383~\text{\AA}.
+\label{eq:a111}
 \end{equation}
 
+\subsection{Malla de energía y cálculo de $k(E)$}
 
-A continuacion se muestran los modelos empleados por los codigos para el calculo de estrucutra de bandas.
+La ecuación~\eqref{eq:dispersion} no se invierte de forma cerrada: $E$ entra dentro de $\alpha$ y $\beta$, y $k$ se obtiene de $\cos(ka)=F(E)$. Por eso no se calcula $E(k)$, sino $k$ sobre una malla uniforme de energías. Las gráficas se dibujan como \texttt{plot($k(E)$, $E$)}, con $k$ en la abscisa y $E$ en la ordenada.
+
+El intervalo cubre las energías que pide la práctica: de $0$ a $30$~eV en el electrón libre y el casi libre, y de $0$ a $35$~eV con el potencial fuerte. El primer punto no es $E=0$, porque $\alpha=0$ produce una indeterminación $0/0$ en $F$; se parte de $10^{-3}$~eV o $10^{-2}$~eV, según el caso. En $E=V_0$ ocurre lo mismo con $\beta$, y se desplaza ese punto por $10^{-12}$~eV.
+
+El paso de la malla controla si se ve o no la brecha. Con $\Delta E=0.1$~eV, que es el ejemplo del guion, una brecha de $\sim 0.06$~eV cabe en menos de un intervalo y el hueco desaparece del gráfico. En el electrón casi libre se usó
+\begin{equation}
+E=0.001:10^{-4}:30~\text{eV},
+\end{equation}
+así que $E_g\approx 0.064$~eV queda muestreada por varios cientos de puntos. Con $V_0=5$~eV las brechas son de varios eV y basta $\Delta E=0.005$~eV entre $0.01$ y $35$~eV.
+
+\texttt{acos} devuelve $k$ en $[0,\pi/a]$: el esquema de zona reducida. La rama $k<0$ se obtiene por reflexión, $E(k)=E(-k)$. El esquema extendido se reconstruye desplegando cada banda sucesiva al intervalo $[(n-1)\pi/a,\,n\pi/a]$, y es esa curva la que se compara con la parábola del electrón libre.
 
 \subsection{Modelo de Kronig--Penney}
 
@@ -100,18 +115,14 @@ En cada región la solución general es una combinación de ondas planas. Para $
 \end{equation}
 Si $E<V_0$, $\beta$ es imaginario: en la barrera las ondas pasan a ser exponenciales reales. La relación de dispersión que se obtiene más abajo sigue siendo válida en ese caso.
 
-
 Como el potencial es periódico, el teorema de Bloch escribe cada estado estacionario en la forma
 \begin{equation}
 \psi_k(x)=u_k(x)\exp(ikx),
 \label{eq:bloch}
 \end{equation}
+donde $u_k(x)$ tiene la periodicidad del cristal, $u_k(x)=u_k(x+a)$.
 
-donde $u_k(x)$ tiene la periodicidad del cristal, $u_k(x)=u_k(x+a)$. 
-
-Los coeficientes $A$, $B$, $C$ y $D$ quedan ligados por lo anterior y por las condiciones de frontera. Tanto $\psi$ como $d\psi/dx$ son continuas en la interfaz entre las regiones~I y~II. Llegando a la siguiente relación
-
-
+Los coeficientes $A$, $B$, $C$ y $D$ quedan ligados por lo anterior y por las condiciones de frontera. Tanto $\psi$ como $d\psi/dx$ son continuas en la interfaz entre las regiones~I y~II. Se llega a la relación
 \begin{equation}
 \begin{aligned}
 \cos(ka)&=F,\\
@@ -126,7 +137,7 @@ Cuando $|F|\leq 1$ existe un $k$ real y el estado es una onda de Bloch que se pr
 
 \subsection{Electrón libre y electrón casi libre}
 
-En el modelo de electrón libre los electrones no sienten el potencial de los iones, de modo que $V_0=0$. Dentro de Kronig--Penney ese caso se obtiene con $V_0=0$ y, como primer elección, $d=a/2$. El hamiltoniano de un electrón se reduce a la energía cinética,
+En el modelo de electrón libre los electrones no sienten el potencial de los iones, de modo que $V_0=0$. Dentro de Kronig--Penney ese caso se obtiene con $V_0=0$ y, como primera elección, $d=a/2$. El hamiltoniano de un electrón se reduce a la energía cinética,
 \begin{equation}
 H_{\mathrm{el}}=\frac{p^2}{2m_e},
 \end{equation}
@@ -135,9 +146,13 @@ y la energía de las ondas planas es
 E(\mathbf{k})=\frac{\hbar^2|\mathbf{k}|^2}{2m_e}.
 \label{eq:libre}
 \end{equation}
-La curva~\eqref{eq:libre} es la referencia con la que se compara la banda que devuelve la ecuación~\eqref{eq:dispersion} al apagar la barrera.
+La curva~\eqref{eq:libre} es la referencia con la que se compara la banda que devuelve la ecuación~\eqref{eq:dispersion} al apagar la barrera. En el borde de la primera zona,
+\begin{equation}
+E\!\left(\frac{\pi}{a}\right)=\frac{\hbar^2}{2m_e}\left(\frac{\pi}{a}\right)^2=6.877~\text{eV}.
+\label{eq:eborde}
+\end{equation}
 
-Si el potencial de los iones es una perturbación débil, el mismo potencial periódico se trata en la aproximación de electrón casi libre. La barrera es baja cuando $V_0$ es mucho menor que la energía cinética en el borde de la primera zona, $\hbar^2(\pi/a)^2/(2m_e)$. En esta práctica esa barrera vale $V_0=0.1$~eV.
+Si el potencial de los iones es una perturbación débil, el mismo potencial periódico se trata en la aproximación de electrón casi libre. La barrera es baja cuando $V_0$ es mucho menor que la energía cinética~\eqref{eq:eborde} en el borde de zona. En esta práctica esa barrera vale $V_0=0.1$~eV, el $1.5\,\%$ de $6.877$~eV.
 
 Por la periodicidad de la red, el potencial admite una serie de Fourier. El coeficiente $n$-ésimo de un potencial de periodo $T$ es
 \begin{equation}
@@ -145,34 +160,146 @@ V_n=\frac{1}{T}\int_{c}^{c+T}V(x)\exp(-in\omega x)\,\mathrm{d}x,
 \qquad\omega=\frac{2\pi}{T}.
 \label{eq:fourier}
 \end{equation}
-En la cadena el periodo es $T=a$, así que $\omega=2\pi/a$. En la base de ondas planas del electrón libre, $V$ solo acopla estados cuyos vectores de onda difieren en un múltiplo de $2\pi/a$. 
+En la cadena el periodo es $T=a$, así que $\omega=2\pi/a$. En la base de ondas planas del electrón libre, $V$ solo acopla estados cuyos vectores de onda difieren en un múltiplo de $2\pi/a$. En $k=\pi/a$ ese acoplamiento abre la primera brecha, de anchura $2|V_1|$ \cite{kittel}. El primer coeficiente del potencial de Kronig--Penney, calculado en el apéndice, es
+\begin{equation}
+|V_1|=\frac{V_0}{\pi}\left|\sin\left(\pi\frac{d}{a}\right)\right|.
+\label{eq:V1mod}
+\end{equation}
 
+\subsection{Velocidad de grupo y masa efectiva}
 
+De la malla $k(E)$ se obtienen, por diferencias finitas, $\mathrm{d}k/\mathrm{d}E$ y $\mathrm{d}^2k/\mathrm{d}E^2$. La velocidad de grupo y la masa efectiva, normalizada a $m_e$, son
+\begin{equation}
+v_g=\frac{1}{\hbar}\frac{\mathrm{d}E}{\mathrm{d}k}
+=\frac{1}{\hbar}\left(\frac{\mathrm{d}k}{\mathrm{d}E}\right)^{-1},
+\label{eq:vg}
+\end{equation}
+\begin{equation}
+\frac{m^*}{m_e}
+=\frac{\hbar^2}{m_e}\left(\frac{\mathrm{d}^2E}{\mathrm{d}k^2}\right)^{-1}
+=-\frac{\hbar^2}{m_e}\frac{(\mathrm{d}k/\mathrm{d}E)^3}{\mathrm{d}^2k/\mathrm{d}E^2}.
+\label{eq:mstar}
+\end{equation}
+En los bordes de banda $\mathrm{d}k/\mathrm{d}E$ diverge, así que las derivadas se evalúan un milielectrónvolt dentro del intervalo permitido.
 
 \section{Resultados}
 
+\subsection{Electrón libre}
 
+La figura~\ref{fig:libre} compara, para $V_0=0$ y $d=a/2$, la banda de Kronig--Penney con la parábola~\eqref{eq:libre}. En el esquema de zona reducida ambas curvas coinciden hasta el borde $k=\pi/a=1.344$~\AA$^{-1}$. A partir de ahí el electrón libre sigue subiendo en $|k|$, mientras que Kronig--Penney repliega $k$ al intervalo $[-\pi/a,\pi/a]$. En el esquema de zona extendida las dos curvas se superponen en todo el rango. No hay energías sin un $k$ real asociado: no se abre brecha, como corresponde a un potencial nulo.
 
+\begin{figure}[htbp]
+\centering
+\fbox{\parbox{0.72\linewidth}{\centering\vspace{2.5em}
+Estructura de bandas, $V_0=0$: zona reducida y zona extendida\vspace{2.5em}}}
+\caption{Electrón libre. Izquierda: zona reducida, $k\in[-\pi/a,\pi/a]$. Derecha: zona extendida. La curva continua es Kronig--Penney; la punteada, $E=\hbar^2k^2/(2m_e)$.}
+\label{fig:libre}
+\end{figure}
 
+\subsection{Electrón casi libre}
 
-La comparativa entre en la estrucutura de bandas del Al en la direccion (111) se muestra en la Fig. 1, en funcion de la energía generado por nuestro script k.m. La linea azul representa la estrucutra de bandas, bajo el modelo de Kroning-Penney, mientras que la linea roja punteada el modelo del electron exacto, fek.m. Se observa como la linea azul y roja estan superpuestas hasta el valor de k = 1.5. Mientras que el modelo del electron libre muestra como la energía aumenta al aumentar la magnitud de k. Mientras que el modelo de Kroning-Penney, lo que hace es que esta contenida el valor de k para valores de $-\frac{pi}{a}\leq k\leq \frac{\pi}{a}$, lo que se concoce como es la estrucutra esqumatica, al realizar la version extendida vemos como en realidad ambas curvas se supornen, haciendo que son realemnte iguales las curvas dadas por estos modelos. Notamos que en no hya energias no tengan asociado un valor de k en el plot, i.e. no hay band gap, lo cual es esperado ya que esta aproximacion no asume interaccion entre los atomos. 
+Al subir la barrera a $V_0=0.1$~eV aparece un hueco en $k=\pm\pi/a$ (figura~\ref{fig:casilibre}). Con $V_0=0.2$~eV el hueco se duplica. La tabla~\ref{tab:gaps} compara $E_g$ con $2|V_1|$. El cociente es $1.001$ en ambos casos.
 
+\begin{figure}[htbp]
+\centering
+\fbox{\parbox{0.72\linewidth}{\centering\vspace{2.5em}
+Primera brecha con $V_0=0.1$~eV\vspace{2.5em}}}
+\caption{Estructura de bandas del electrón casi libre, $V_0=0.1$~eV, $d=a/2$. La primera brecha se abre en el borde de zona.}
+\label{fig:casilibre}
+\end{figure}
 
+\begin{table}[htbp]
+\centering
+\caption{Primera brecha frente a $2|V_1|$. En los dos primeros renglones, $d=a/2$; en el tercero, $d=1$~\AA.}
+\label{tab:gaps}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+$V_0$ (eV) & $E_g$ (eV) & $2|V_1|$ (eV) & $E_g/(2|V_1|)$ \\
+\midrule
+$0.1$ & $0.0637$ & $0.0637$ & $1.001$ \\
+$0.2$ & $0.1274$ & $0.1273$ & $1.001$ \\
+$5.0$ & $3.140$  & $3.101$  & $1.013$ \\
+\bottomrule
+\end{tabular}
+\end{table}
 
+\subsection{Potencial fuerte}
 
+Con $V_0=5$~eV y $d=1$~\AA\ la primera banda corre de $2.685$ a $8.120$~eV y la primera brecha de $8.120$ a $11.260$~eV, con $E_g=3.140$~eV (figura~\ref{fig:fuerte}). Respecto al caso $V_0=0.1$~eV, esa brecha crece en un factor $49$. El fondo de la banda ya no está en $E=0$: el electrón queda ligado al pozo.
 
-\section{Discusion}
+\begin{figure}[htbp]
+\centering
+\fbox{\parbox{0.72\linewidth}{\centering\vspace{2.5em}
+Bandas con $V_0=5$~eV, $d=1$~\AA\vspace{2.5em}}}
+\caption{Estructura de bandas con potencial fuerte. Las brechas son de varios eV y la primera banda arranca por encima de cero.}
+\label{fig:fuerte}
+\end{figure}
 
+\subsection{Estados de superficie}
 
+Dentro de las brechas, $k$ es imaginario (figura~\ref{fig:superficie}). En el centro de la primera brecha, $E=9.690$~eV,
+\begin{equation}
+|\operatorname{Im}k|=0.153~\text{\AA}^{-1},
+\end{equation}
+de modo que la longitud de decaimiento es $1/|\operatorname{Im}k|=6.55$~\AA, equivalentes a $2.80$ periodos de la cadena, es decir $2.80$ capas atómicas $(111)$.
+
+\begin{figure}[htbp]
+\centering
+\fbox{\parbox{0.72\linewidth}{\centering\vspace{2.5em}
+$\operatorname{Re}k$ (bandas) e $\operatorname{Im}k$ (brechas)\vspace{2.5em}}}
+\caption{Parte real e imaginaria de $k(E)$ para $V_0=5$~eV, $d=1$~\AA. $\operatorname{Im}k$ es distinta de cero solo dentro de las brechas.}
+\label{fig:superficie}
+\end{figure}
+
+\subsection{Velocidad de grupo y masa efectiva}
+
+En la primera banda, con $V_0=0.1$~eV, $v_g$ se anula en $k=0$ y en $k=\pm\pi/a$, y alcanza un máximo de $1.515\times 10^{16}$~\AA/s, el $0.505\,\%$ de $c$ (figura~\ref{fig:vg}). La masa efectiva, figura~\ref{fig:masa}, vale $m^*/m_e\approx +1$ cerca del fondo de la banda y cambia de signo al acercarse al techo.
+
+\begin{figure}[htbp]
+\centering
+\fbox{\parbox{0.72\linewidth}{\centering\vspace{2.5em}
+$v_g(k)$ en la primera banda\vspace{2.5em}}}
+\caption{Velocidad de grupo en la primera banda. Se anula en el centro y en los bordes de la zona de Brillouin.}
+\label{fig:vg}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\fbox{\parbox{0.72\linewidth}{\centering\vspace{2.5em}
+$m^*(E)/m_e$ en la primera banda\vspace{2.5em}}}
+\caption{Masa efectiva normalizada a $m_e$, en función de la energía. Es positiva en el fondo de la banda y negativa cerca del techo.}
+\label{fig:masa}
+\end{figure}
+
+\section{Discusión}
+
+La coincidencia entre Kronig--Penney con $V_0=0$ y la parábola~\eqref{eq:libre} no es un accidente numérico: al apagar la barrera, $F=\cos(\alpha a)$ y $k=\alpha=\sqrt{2m_e E}/\hbar$. Lo que cambia de una figura a la otra es solo el esquema de zonas. En la zona reducida, $\texttt{acos}$ pliega cada intervalo $[(n-1)\pi/a,\,n\pi/a]$ sobre $[0,\pi/a]$; el electrón libre, calculado con \texttt{fek.m}, se deja en la zona extendida. Por eso las curvas se separan visualmente en $k=\pi/a\approx 1.34$~\AA$^{-1}$, y no en $k=1.5$~\AA$^{-1}$. Al desplegar la banda, vuelven a ser la misma parábola. Que no haya brecha confirma que el hueco no lo inventa el plegado, sino el potencial periódico.
+
+$V_0=0.1$~eV es una barrera baja porque la escala con la que hay que compararla es la energía cinética en el borde de zona, $6.877$~eV, y no el cero de energía. El $1.5\,\%$ de esa escala justifica tratar el potencial como perturbación. En electrón casi libre, los estados $k=\pi/a$ y $k=-\pi/a$ quedan degenerados en el electrón libre y el término $V_1$ de Fourier los mezcla: se forman las combinaciones simétrica y antisimétrica, y la degeneración se abre en $2|V_1|$ \cite{kittel}. La tabla~\ref{tab:gaps} lo verifica. Al pasar de $V_0=0.1$ a $0.2$~eV, con $d$ fijo, $|V_1|$ es lineal en $V_0$ y $E_g$ se duplica. El cociente $E_g/(2|V_1|)=1.001$ indica que, con esta malla, la corrección de orden superior es menor que el milielectrónvolt.
+
+Esa resolución no se obtiene con cualquier paso. El guion advierte que $\Delta E=0.1$~eV da un hueco demasiado grande, o lo borra. Con $E_g=0.064$~eV, un paso de $0.1$~eV no llega a poner un punto dentro de la brecha; \texttt{bordes.m} no vería \texttt{NaN} y reportaría $E_g=0$. El paso $10^{-4}$~eV deja unos $640$ puntos en el hueco y permite cotizar $E_g$ a $10^{-4}$~eV. El intervalo hasta $30$~eV cubre un poco más de dos zonas de Brillouin ($E=30$~eV corresponde a $k\approx 2.09\,\pi/a$), suficiente para ver la primera brecha y el arranque de la segunda banda.
+
+Con $V_0=5$~eV y $d=1$~\AA\ se sale del régimen perturbativo: $V_0$ es el $73\,\%$ de $6.877$~eV, y además se estrecha el pozo. La primera brecha pasa de $0.064$ a $3.14$~eV, un factor $49$, del mismo orden que el factor $50$ en $V_0$ corregido por $\sin(\pi d/a)$, que baja de $1$ a $0.974$. Incluso aquí $2|V_1|$ sigue siendo una estimación útil ($3.10$~eV frente a $3.14$~eV), pero el espectro ya no es una parábola con un hueco pequeño: la primera banda arranca en $2.69$~eV, porque el estado más bajo queda ligado al pozo, y las brechas de varios eV separan de verdad las bandas.
+
+Dentro de esas brechas no hay ondas de Bloch que se propaguen. La solución con $k=i\kappa$ es $\psi\sim\exp(\pm\kappa x)$: crece en un sentido y no es normalizable en un cristal infinito. En un cristal semiinfinito sí cabe, como estado de superficie, si se descarta la exponencial que explota hacia el interior \cite{kittel}. $|\operatorname{Im}k|$ mide qué tan rápido decae esa amplitud. En el centro de la primera brecha, $2.80$ capas atómicas significan un estado localizado en las primeras tres capas $(111)$, no un estado extendido. Lejos del centro de la brecha, $|\operatorname{Im}k|$ disminuye y el estado se mete más al volumen, como en la figura de $k$ complejo de Kittel.
+
+La velocidad de grupo es la velocidad con la que se desplaza un paquete. En el fondo de la banda, $E\propto k^2$ y $v_g\propto k$, como un electrón libre lento. Al acercarse a $k=\pi/a$ la banda se aplana porque el electrón sufre reflexión de Bragg contra los planos de la red: la onda incidente y la reflejada forman una onda estacionaria, y una onda estacionaria no transporta energía. Por eso $v_g\to 0$ en el borde de zona, y el máximo, $0.505\,\%$ de $c$, queda muy por debajo de la velocidad de un electrón libre con la misma energía. Ese máximo no es un límite relativista; es el techo que impone la pendiente de $E(k)$ en esta banda.
+
+La masa efectiva traduce esa curvatura a una masa inercial. Cerca del fondo, $m^*\approx m_e$: el electrón responde a un campo casi como si estuviera libre. Al subir en la banda la curvatura disminuye, $m^*$ crece y, al pasar por un punto de inflexión, cambia de signo. $m^*<0$ cerca del techo quiere decir que, si un campo eléctrico aumenta $k$, $v_g$ disminuye: la red frena al electrón más de lo que el campo lo acelera. El hueco que deja un electrón con $m^*<0$ en una banda casi llena se comporta como un portador de carga positiva y masa positiva, el hueco de la teoría de bandas.
+
+El modelo es unidimensional y el potencial es de cajas. No reproduce la Fermi de $11.7$~eV del aluminio tridimensional ni la degeneración de los planos $(111)$, $(1\bar{1}1)$, etc. Sirve para ver, con una ecuación explícita, cómo un potencial periódico abre brechas, cómo $k$ complejo describe un estado de superficie, y cómo $v_g$ y $m^*$ salen de la forma de $E(k)$.
 
 \section{Conclusiones}
 
+Con $V_0=0$, Kronig--Penney reproduce al electrón libre: las curvas coinciden en la zona extendida y no hay brecha. El aspecto distinto de la zona reducida es solo el plegado de $k$.
 
+$V_0=0.1$~eV es bajo frente a los $6.877$~eV del borde de zona. La primera brecha vale $0.0637$~eV y coincide con $2|V_1|$. Al duplicar $V_0$ se duplica $E_g$, de acuerdo con la linealidad del coeficiente de Fourier. Esa comparación exige una malla de $10^{-4}$~eV; un paso de $0.1$~eV no resuelve el hueco.
 
+Con $V_0=5$~eV y $d=1$~\AA\ la primera brecha crece hasta $3.14$~eV, un factor $49$ respecto al electrón casi libre, y la primera banda se despega del origen. En el centro de esa brecha, $|\operatorname{Im}k|=0.153$~\AA$^{-1}$ y el estado de superficie se extiende $2.80$ capas atómicas.
 
+En la primera banda, $v_g$ se anula en los bordes de zona por la reflexión de Bragg y no supera el $0.505\,\%$ de $c$. La masa efectiva es del orden de $m_e$ en el fondo y negativa en el techo, que es la masa del hueco.
 
 \section{Referencias}
-
 
 \begin{thebibliography}{99}
 \bibitem[Kronig y Penney(1931)]{kronig1931}
@@ -184,87 +311,41 @@ C.~Kittel, \emph{Introduction to Solid State Physics}, 7.\textsuperscript{a}~ed.
 (John Wiley \& Sons, New York, 1996).
 \end{thebibliography}
 
+\appendix
+\section{Cálculo de $|V_1|$}
 
-
-
-\section{Apendice}
-
-\subsection{Fourier}
-
-\noindent Podemos definir el potencial de Kronig-Penney:
+El potencial de Kronig--Penney en un periodo es
 \begin{equation*}
-V(x) = \begin{cases} 
-V_0, & 0 \leq x \leq s = a-d \\ 
-0, & a-d < x \leq a 
+V(x) = \begin{cases}
+V_0, & 0 \leq x \leq s = a-d, \\
+0, & a-d < x \leq a.
 \end{cases}
 \end{equation*}
-
-\noindent La componente de Fourier se define como:
+El primer coeficiente de Fourier es
 \begin{equation*}
-V_1 = \frac{1}{a} \int_{c}^{c+a} V(x) \exp\left(-\frac{i 2\pi x}{a}\right) dx
+V_1 = \frac{1}{a} \int_{c}^{c+a} V(x) \exp\left(-\frac{i 2\pi x}{a}\right) \mathrm{d}x.
 \end{equation*}
-
-\noindent Con $c=0$ y partiendo con la definición anterior:
+Con $c=0$,
 \begin{equation*}
-V_1 = \frac{1}{a} \int_{0}^{a-d} V_0 \exp\left(-\frac{i 2\pi}{a}x\right) dx
+V_1 = \frac{1}{a} \int_{0}^{a-d} V_0 \exp\left(-\frac{i 2\pi}{a}x\right) \mathrm{d}x.
 \end{equation*}
-
-\noindent Haciendo el cambio de variable:
+El cambio de variable $u=-i(2\pi/a)x$ da
 \begin{align*}
-u &= -\frac{i 2\pi}{a}x \\
-u(0) &= 0 \\
-u(a-d) &= -\frac{i 2\pi}{a}(a-d) = -i 2\pi \left(1 - \frac{d}{a}\right)
+V_1 &= i \frac{V_0}{2\pi} \int_{0}^{-i 2\pi\left(1 - d/a\right)} \exp(u)\,\mathrm{d}u \\
+&= i \frac{V_0}{2\pi} \left[ \exp(-i 2\pi) \exp\left(i 2\pi \tfrac{d}{a}\right) - 1 \right] \\
+&= \frac{V_0}{2\pi} \left[ -\sin\left(2\pi \tfrac{d}{a}\right) + i \left(\cos\left(2\pi \tfrac{d}{a}\right) - 1\right) \right].
 \end{align*}
-
-\noindent Resolviendo la integral:
+El módulo es
 \begin{align*}
-V_1 &= i \frac{V_0}{2\pi} \int_{0}^{-i 2\pi\left(1 - \frac{d}{a}\right)} \exp(u) du \\
-&= i \frac{V_0}{2\pi} \exp(u) \bigg|_{0}^{-i 2\pi\left(1 - \frac{d}{a}\right)} \\
-&= i \frac{V_0}{2\pi} \left[ \exp(-i 2\pi) \exp\left(i 2\pi \frac{d}{a}\right) - 1 \right] \\
-&= \frac{i V_0}{2\pi} \left[ \cos\left(2\pi \frac{d}{a}\right) - 1 + i \sin\left(2\pi \frac{d}{a}\right) \right] \\
-&= \frac{V_0}{2\pi} \left[ -\sin\left(2\pi \frac{d}{a}\right) + i \left(\cos\left(2\pi \frac{d}{a}\right) - 1\right) \right]
+|V_1| &= \frac{V_0}{2\pi} \left[ \sin^2\left(2\pi \tfrac{d}{a}\right) + \left(\cos\left(2\pi \tfrac{d}{a}\right) - 1\right)^2 \right]^{1/2} \\
+&= \frac{V_0}{2\pi} \left[ 2 - 2\cos\left(2\pi \tfrac{d}{a}\right) \right]^{1/2} \\
+&= \frac{V_0}{\pi} \left[ \frac{1 - \cos\left(2\pi d/a\right)}{2} \right]^{1/2}.
 \end{align*}
-
-\noindent Luego, calculamos la magnitud $|V_1|$:
-\begin{align*}
-|V_1| &= \frac{V_0}{2\pi} \left[ \sin^2\left(2\pi \frac{d}{a}\right) + \left(\cos\left(2\pi \frac{d}{a}\right) - 1\right)^2 \right]^{1/2} \\
-&= \frac{V_0}{2\pi} \left[ \sin^2\left(2\pi \frac{d}{a}\right) + \cos^2\left(2\pi \frac{d}{a}\right) + 1 - 2\cos\left(2\pi \frac{d}{a}\right) \right]^{1/2} \\
-&= \frac{V_0}{2\pi} \left[ 2 - 2\cos\left(2\pi \frac{d}{a}\right) \right]^{1/2} \\
-&= \frac{V_0}{\pi} \left[ \frac{1 - \cos\left(2\pi \frac{d}{a}\right)}{2} \right]^{1/2}
-\end{align*}
-
-\noindent Como:
-\begin{equation*}
-\cos(2x) = \cos^2 x - \sin^2 x = 1 - 2\sin^2 x
-\end{equation*}
-
-\noindent Finalmente:
-\begin{equation*}
-\sin x = \sqrt{\frac{1 - \cos(2x)}{2}}
-\end{equation*}
-
-\begin{equation*}
-|V_1| = \frac{V_0}{\pi} \left| \sin\left(\pi \frac{d}{a}\right) \right|
-\end{equation*}
-
-\vspace{0.5cm}
-\noindent Demostrando que en efecto es proporcional a $V_0$.
-
-
-\subsection{Parámetro de red}
-
-El primer coeficiente del potencial de Kronig--Penney es
+Con la identidad $1-\cos(2x)=2\sin^2 x$,
 \begin{equation}
-V_1=\frac{1}{a}\int_{c}^{c+a}V_{\mathrm{KP}}(x)
-\exp\!\left(-i\frac{2\pi x}{a}\right)\mathrm{d}x.
+|V_1| = \frac{V_0}{\pi} \left| \sin\left(\pi \frac{d}{a}\right) \right|.
 \label{eq:V1}
 \end{equation}
-En la frontera de la zona, $k=\pi/a$, ese acoplamiento abre la primera brecha. Su anchura es, aproximadamente, $2|V_1|$ \cite{kittel}.
-
-
-
-
-
-
+$|V_1|$ es proporcional a $V_0$. En el borde de zona, $k=\pi/a$, ese acoplamiento abre la primera brecha con anchura $2|V_1|$ \cite{kittel}.
 
 \end{document}
