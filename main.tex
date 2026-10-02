@@ -65,7 +65,7 @@ En este trabajo se calcula la estructura de bandas de una cadena monoatómica de
 
 \subsection{Códigos}
 
-Las simulaciones se hicieron en MATLAB R2024b. El script \texttt{main.m} (equivalente al live script \texttt{main.mlx}) define las constantes globales y recorre los cinco casos de la práctica. \texttt{kv.m} evalúa la relación de dispersión~\eqref{eq:dispersion}. \texttt{k.m} toma un arreglo de energías y devuelve $\operatorname{Re}k(E)$, $\operatorname{Im}k(E)$ y, si se pide, $k$ en zona extendida; donde no hay $k$ real pone \texttt{NaN} y con ello marca las brechas. \texttt{fek.m} calcula la parábola del electrón libre. \texttt{bordes.m} localiza el fondo y el techo de la primera banda, de donde se obtiene $E_g$. El código completo está en el apéndice~\ref{ap:codigo}. Las figuras de la sección de resultados las genera \texttt{main.m} al correrse.
+Las simulaciones se hicieron en MATLAB R2024b. El script \texttt{main.m} (equivalente al live script \texttt{main.mlx}) define las constantes globales y recorre los cinco casos de la práctica. \texttt{kv.m} evalúa la relación de dispersión~\eqref{eq:dispersion}. \texttt{k.m} toma un arreglo de energías y devuelve $\operatorname{Re}k(E)$ e $\operatorname{Im}k(E)$; donde no hay $k$ real pone \texttt{NaN} y con ello marca las brechas. \texttt{kext.m} despliega $k$ al esquema de zona extendida. \texttt{fek.m} calcula la parábola del electrón libre. \texttt{bordes.m} localiza el fondo y el techo de la primera banda, de donde se obtiene $E_g$. El código completo está en el apéndice~\ref{ap:codigo}. Las figuras de la sección de resultados las genera \texttt{main.m} al correrse.
 
 Las longitudes se expresan en ångströms, el vector de onda en \AA$^{-1}$ y la energía en eV. Con ese sistema de unidades, la masa del electrón y $\hbar$ se introducen con los valores numéricos de la práctica,
 \begin{equation}
@@ -346,7 +346,10 @@ El live script \texttt{main.mlx} se transcribió a \texttt{main.m} para poder li
 \lstinputlisting[caption={Relación de dispersión, ecuación~(10).}]{kv.m}
 
 \subsection{\texttt{k.m}}
-\lstinputlisting[caption={$\operatorname{Re}k$, $\operatorname{Im}k$ y zona extendida.}]{k.m}
+\lstinputlisting[caption={$\operatorname{Re}k$ e $\operatorname{Im}k$. La zona extendida está en \texttt{kext.m}.}]{k.m}
+
+\subsection{\texttt{kext.m}}
+\lstinputlisting[caption={Esquema de zona extendida.}]{kext.m}
 
 \subsection{\texttt{fek.m}}
 \lstinputlisting[caption={Electrón libre exacto.}]{fek.m}
