@@ -1,7 +1,8 @@
 % superficie
 % Estados de superficie: dentro de las brechas el vector de onda es
 % imaginario y la funcion de onda decae exponencialmente hacia el interior
-% del cristal. Requiere haber ejecutado main.m antes.
+% del cristal. Requiere haber ejecutado antes la primera seccion de
+% main.mlx, que define las variables globales.
 
 global me hbar V0 a d
 

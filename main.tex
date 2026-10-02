@@ -55,7 +55,7 @@ El modelo de Kronig--Penney trata un solo electrón en un cristal unidimensional
   \fbox{\parbox{0.72\linewidth}{\centering\vspace{2.5em}
   Potencial periódico de Kronig--Penney\vspace{2.5em}}}%
 }
-\caption{Potencial del modelo de Kronig--Penney. La región~I, entre iones, es una barrera de altura $V_0$ y ancho $s$. La región~II, sobre los iones, es un pozo de potencial nulo y ancho $d$. El periodo es $a=d+s$.}
+\caption{Potencial del modelo de Kronig--Penney. La región~I, entre iones, es una barrera de altura $V_0$ y ancho $d$. La región~II, sobre los iones, es un pozo de potencial nulo y ancho $s$. El periodo es $a=d+s$.}
 \label{fig:kp}
 \end{figure}
 
@@ -70,12 +70,12 @@ El cero de la energía es arbitrario. Con el origen de la figura~\ref{fig:kp}, e
 \begin{equation}
 V_{\mathrm{KP}}(x)=
 \begin{cases}
-V_0, & an \leq x \leq an+s, \quad n\in\mathbb{Z},\\
+V_0, & an \leq x \leq an+d, \quad n\in\mathbb{Z},\\
 0, & \text{en el resto del periodo,}
 \end{cases}
 \label{eq:potencial}
 \end{equation}
-donde el ancho de la barrera es $s=a-d$ y el del pozo es $d$. La región~I es la barrera y la región~II es el pozo.
+donde el ancho de la barrera es $d$ y el del pozo es $s=a-d$. La región~I es la barrera y la región~II es el pozo.
 
 En cada región la solución general es una combinación de ondas planas. Para $E>V_0$,
 \begin{equation}
@@ -110,8 +110,8 @@ y lo mismo ocurre con su derivada. Continuidad y condición de Bloch forman un s
 \begin{equation}
 \begin{aligned}
 \cos(ka)&=F,\\
-F&=\cos(\alpha d)\cos(\beta s)
--\frac{\alpha^2+\beta^2}{2\alpha\beta}\sin(\alpha d)\sin(\beta s).
+F&=\cos(\beta d)\cos(\alpha s)
+-\frac{\alpha^2+\beta^2}{2\alpha\beta}\sin(\beta d)\sin(\alpha s).
 \end{aligned}
 \label{eq:dispersion}
 \end{equation}

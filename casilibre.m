@@ -1,7 +1,8 @@
 % casilibre
 % Electron casi libre: se levanta la barrera a V0 = 0.1 eV y se compara la
 % primera brecha con 2|V1|, el primer coeficiente de Fourier del potencial.
-% Requiere haber ejecutado main.m antes.
+% Requiere haber ejecutado antes la primera seccion de main.mlx, que define
+% las variables globales.
 
 global me hbar V0 a d
 

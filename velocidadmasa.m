@@ -1,6 +1,7 @@
 % velocidadmasa
 % Velocidad de grupo y masa efectiva en la primera banda.
-% Requiere haber ejecutado main.m antes.
+% Requiere haber ejecutado antes la primera seccion de main.mlx, que define
+% las variables globales.
 %
 % De k(E) se obtiene k' = dk/dE por diferencias finitas. De ahi
 %   vg    = (1/hbar) dE/dk      = 1/(hbar k')

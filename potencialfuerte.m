@@ -1,6 +1,7 @@
 % potencialfuerte
 % Estructura de bandas con pozos mas profundos: V0 = 5 eV y d = 1 A.
-% Requiere haber ejecutado main.m antes.
+% Requiere haber ejecutado antes la primera seccion de main.mlx, que define
+% las variables globales.
 
 global me hbar V0 a d
 
