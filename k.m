@@ -11,7 +11,7 @@ function [rkvE, ikvE] = k(E)
             kE(j)=NaN; 
         end
     end
-    rkvE =  kE;
+    rkvE = real(kE);
 end
 
 

@@ -1,6 +1,11 @@
 % main.m
 % Estructura de bandas de Al [111] con el modelo de Kronig-Penney.
 
+here = fileparts(mfilename('fullpath'));
+if isempty(here), here = pwd; end
+addpath(here, '-begin');
+figdir = fullfile(here, 'figures');
+if ~exist(figdir, 'dir'), mkdir(figdir); end
 
 global me hbar V0 a d
 
@@ -49,9 +54,9 @@ guardarfig(fig, fullfile(figdir, 'fig_libre.png'));
 %% Electron casi libre
 a = 4.05/sqrt(3);
 d = a/2;
-Max = (hbar^2/(2*me))*(pi/a)^2;
-fprintf('Eborde = %.4f eV;  V0 = 0.1 eV es el %.2f %% \n', ...
-        Eborde, 100*0.1/Max)
+Eborde = (hbar^2/(2*me))*(pi/a)^2;
+fprintf('Eborde = %.4f eV;  V0 = 0.1 eV es el %.2f %% de esa escala.\n', ...
+        Eborde, 100*0.1/Eborde)
 
 E = 0.001:1e-4:30;
 for v = [0.1 0.2]
