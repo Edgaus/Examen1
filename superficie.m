@@ -16,15 +16,22 @@ E = 0.01:0.005:35;
 ik = abs(ik);         % la rama de acos cambia de signo segun si F > 1 o F < -1
 ik(ik == 0) = NaN;    % no dibujar la linea de ceros dentro de las bandas
 
+% Rama k < 0 por reflexion. En Re k corresponde a la onda reflejada; en
+% Im k, al estado que decae desde la superficie opuesta del cristal.
+kk  = [-fliplr(rk), NaN, rk];
+kki = [-fliplr(ik), NaN, ik];
+EE  = [ fliplr(E),  NaN,  E];
+
 figure
 hold on
-plot(rk, E, 'b', 'LineWidth', 2)   % bandas permitidas
-plot(ik, E, 'r', 'LineWidth', 2)   % estados evanescentes en las brechas
+plot(kk,  EE, 'b')   % bandas permitidas
+plot(kki, EE, 'r')   % estados evanescentes en las brechas
 hold off
-xlabel('k (1/A)')
+xlabel('k (Å^{-1})')
 ylabel('E (eV)')
-title('Re k y |Im k|, V_0 = 5 eV, d = 1 A')
-legend('Re k', '|Im k|', 'Location', 'southeast')
+title('Estados de superficie: Re k e Im k, V_0 = 5 eV, d = 1 Å')
+legend('Re k', 'Im k', 'Location', 'southeast')
+grid on
 
 % Alcance de un estado de superficie en el centro de la primera brecha.
 [~, Et, E2] = bordes(E);

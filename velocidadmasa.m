@@ -26,18 +26,27 @@ ms = -(hbar^2)*dk.^3./(me*gradient(dk, E));  % ecuacion (15), normalizada a me
 
 fprintf('vg max = %.4e A/s = %.3f%% de c\n', max(abs(vg)), 100*max(abs(vg))/c)
 
-% La velocidad de grupo se pide en funcion de k.
+% La velocidad de grupo se pide en funcion de k. Como E(k) es par, su
+% derivada es impar: al reflejar a k < 0 la velocidad cambia de signo,
+% que es el electron viajando en sentido contrario.
+rk = k(E);
+kk = [-fliplr(rk), NaN, rk];
+vv = [-fliplr(vg), NaN, vg];
+
 figure
-plot(k(E), vg, 'b', 'LineWidth', 2)
-xlabel('k (1/A)')
-ylabel('v_g (A/s)')
+plot(kk, vv, 'b')
+yline(0, 'k:')
+xlabel('k (Å^{-1})')
+ylabel('v_g (Å/s)')
 title('Velocidad de grupo en la primera banda')
+grid on
 
 % La masa efectiva se pide en funcion de la energia.
 figure
-plot(E, ms, 'b', 'LineWidth', 2)
+plot(E, ms, 'b')
+yline(0, 'k:')
 ylim([-5 5])
 xlabel('E (eV)')
 ylabel('m^*/m_e')
 title('Masa efectiva en la primera banda')
-yline(0, 'k:')
+grid on

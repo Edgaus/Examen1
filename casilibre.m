@@ -26,10 +26,17 @@ for v = [0.1 0.2]
 end
 
 V0 = 0.1;
-[rk, ik] = k(E);
+rk = k(E);
+
+% La rama k < 0 es el reflejo de la positiva, porque E(k) = E(-k).
+% El NaN evita que plot una las dos ramas con un segmento espurio.
+kk = [-fliplr(rk), NaN, rk];
+EE = [ fliplr(E),  NaN,  E];
 
 figure
-plot(rk, E, 'b', 'LineWidth', 2)
-xlabel('k (1/A)')
+plot(kk, EE, 'b')
+xlabel('k (Å^{-1})')
 ylabel('E (eV)')
-title('Electron casi libre, V_0 = 0.1 eV')
+title('Estructura de bandas: electrón casi libre, V_0 = 0.1 eV')
+xlim([-pi/a pi/a])
+grid on

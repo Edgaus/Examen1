@@ -10,14 +10,20 @@ V0 = 5;
 
 E = 0.01:0.005:35;          % malla fina: con 0.1 eV una brecha chica no se resuelve
 
-[rk, ik] = k(E);
+rk = k(E);
 
 [Ef, Et, E2] = bordes(E);
 fprintf('Primera banda: %.4f a %.4f eV\n', Ef, Et)
 fprintf('Primera brecha: %.4f a %.4f eV, Eg = %.4f eV\n', Et, E2, E2 - Et)
 
+% La rama k < 0 es el reflejo de la positiva, porque E(k) = E(-k).
+kk = [-fliplr(rk), NaN, rk];
+EE = [ fliplr(E),  NaN,  E];
+
 figure
-plot(rk, E, 'b', 'LineWidth', 2)
-xlabel('k (1/A)')
+plot(kk, EE, 'b')
+xlabel('k (Å^{-1})')
 ylabel('E (eV)')
-title('Potencial fuerte, V_0 = 5 eV, d = 1 A')
+title('Estructura de bandas: potencial fuerte, V_0 = 5 eV, d = 1 Å')
+xlim([-pi/a pi/a])
+grid on

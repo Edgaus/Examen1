@@ -27,14 +27,27 @@ E = 0.1:0.01:30;        % eV
 
 % La estructura de bandas lleva k en la abscisa y E en la ordenada,
 % de modo que k(E) es el primer argumento de plot.
+%
+% E(k) es par en k, asi que la rama k < 0 es el reflejo de la positiva.
+% Hay que construirla porque acos solo devuelve valores en [0, pi]. El NaN
+% separa las dos ramas: sin el, plot las une con un segmento horizontal
+% que no es parte de la solucion.
+rk = k(E);
+kk = [-fliplr(rk), NaN, rk];
+EE = [ fliplr(E),  NaN,  E];
+
+kl  = fek(E);
+kkl = [-fliplr(kl), NaN, kl];
+
 figure
-plot(k(E), E, 'b', fek(E), E, 'r--')
-xlabel('k (1/A)')
+plot(kk, EE, 'b', kkl, EE, 'r--')
+xlabel('k (Å^{-1})')
 ylabel('E (eV)')
-title('Electron libre')
-legend('Kronig-Penney', 'Electron libre exacto', 'Location', 'southeast')
+title('Estructura de bandas: electrón libre')
+legend('Kronig-Penney', 'Electrón libre exacto', 'Location', 'best')
+grid on
 % Sin xlim se aprecia la diferencia: Kronig-Penney devuelve la banda
-% plegada en [0, pi/a] y fek la parabola extendida.
+% plegada en [-pi/a, pi/a] y fek la parabola extendida.
 
 % Con V0 = 0 la banda de Kronig-Penney es la parabola libre plegada en la
 % primera zona: la diferencia con acos(cos(k a))/a es del orden de 1e-13.
