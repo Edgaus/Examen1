@@ -9,5 +9,5 @@ function [rkvE, ikvE] = k(E)
         end
         
     end
-    rkvE =  kE;
+    rkvE = real(kE);
 end
