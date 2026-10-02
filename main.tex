@@ -37,20 +37,22 @@ En este trabajo se calcula la estructura de bandas de una cadena monoatómica de
 
 \section{Metodología}
 
-\subsection{Codigo}
+\subsection{Códigos}
 
-
-Las simulaciones se hicieron en MATLAB R2024b. Los codigos elaborados en este trabajo para modelar la estructura de bandas bajo la aproximacion de un solo electron del Al en la direccion (111) está elaborado a lo largo de 5 scripts. Los scripts se pueden encontrar al final de este documento en la seccion de $Apendice$. Hay 5 codigos, Main.mlx es un live script, inspirado en los Jupyter notebooks por python, donde cada seccion analiza la estructura de bandas en distintos escenarios y manda a llamar a los otros scripts. En particular k.m que toma un array de energia y regresa la estrucutryra de bandas, para ello emplea kv.m que resuleve las ecuaciones analiticas $\ref{eq:dispersion}$ del Modelo Kroning.Penney, el cual se detallara en la siguiente seccion. Mientras que el script para el modelo del electron libre está en el script fek.m. A su vez se generó, un archivo extra, llamado bordes.m que analiza el array que contienen la estrucutura de bandas y regresa aquellos valores de k que se encuentran en el borde de las band gaps que se llegan a formar para calcular la energi adel gap $E_g$.
-
-
+Las simulaciones se hicieron en MATLAB R2024b. El cálculo se reparte en cinco archivos, que se reproducen en el apéndice:
+\begin{itemize}
+\item \texttt{main.mlx}: \emph{live script} que fija los parámetros y, en una sección por cada caso estudiado, grafica la estructura de bandas llamando a los demás archivos.
+\item \texttt{kv.m}: evalúa la relación de dispersión~\eqref{eq:dispersion} y devuelve $k=\arccos(F)/a$.
+\item \texttt{k.m}: recibe un arreglo de energías y devuelve la estructura de bandas, separando la parte real de $k$ de la imaginaria.
+\item \texttt{fek.m}: devuelve $k(E)$ del electrón libre, ecuación~\eqref{eq:libre}.
+\item \texttt{bordes.m}: localiza los bordes de banda en el arreglo que devuelve \texttt{k.m} y de ahí la anchura de la brecha $E_g$.
+\end{itemize}
 
 Las longitudes se expresan en ångströms, el vector de onda en \AA$^{-1}$ y la energía en eV. Con ese sistema de unidades, la masa del electrón y $\hbar$ se introducen con los valores numéricos de la práctica, de modo que $k=\sqrt{2m_e E}/\hbar$ queda directamente en \AA$^{-1}$. El periodo del modelo no es la constante de red cúbica del aluminio, $a_{\mathrm{Al}}=4.05$~\AA, sino la distancia entre planos $(111)$:
 \begin{equation}
-a=\frac{a_{\mathrm{Al}}}{\sqrt{3}}.
+a=\frac{a_{\mathrm{Al}}}{\sqrt{3}}=2.3383~\text{\AA}.
+\label{eq:periodo}
 \end{equation}
-
-
-A continuacion se muestran los modelos empleados por los codigos para el calculo de estrucutra de bandas.
 
 \subsection{Modelo de Kronig--Penney}
 
@@ -101,17 +103,7 @@ En cada región la solución general es una combinación de ondas planas. Para $
 Si $E<V_0$, $\beta$ es imaginario: en la barrera las ondas pasan a ser exponenciales reales. La relación de dispersión que se obtiene más abajo sigue siendo válida en ese caso.
 
 
-Como el potencial es periódico, el teorema de Bloch escribe cada estado estacionario en la forma
-\begin{equation}
-\psi_k(x)=u_k(x)\exp(ikx),
-\label{eq:bloch}
-\end{equation}
-
-donde $u_k(x)$ tiene la periodicidad del cristal, $u_k(x)=u_k(x+a)$. 
-
-Los coeficientes $A$, $B$, $C$ y $D$ quedan ligados por lo anterior y por las condiciones de frontera. Tanto $\psi$ como $d\psi/dx$ son continuas en la interfaz entre las regiones~I y~II. Llegando a la siguiente relación
-
-
+Como el potencial es periódico, el teorema de Bloch escribe cada estado estacionario en la forma $\psi_k(x)=u_k(x)\exp(ikx)$, con $u_k(x+a)=u_k(x)$. Imponer eso junto con la continuidad de $\psi$ y de $d\psi/dx$ en la interfaz entre las regiones~I y~II deja un sistema homogéneo para $A$, $B$, $C$ y $D$, que tiene solución distinta de la trivial solo si
 \begin{equation}
 \begin{aligned}
 \cos(ka)&=F,\\
@@ -126,38 +118,51 @@ Cuando $|F|\leq 1$ existe un $k$ real y el estado es una onda de Bloch que se pr
 
 \subsection{Electrón libre y electrón casi libre}
 
-En el modelo de electrón libre los electrones no sienten el potencial de los iones, de modo que $V_0=0$. Dentro de Kronig--Penney ese caso se obtiene con $V_0=0$ y, como primer elección, $d=a/2$. El hamiltoniano de un electrón se reduce a la energía cinética,
+En el modelo de electrón libre los electrones no sienten el potencial de los iones. Dentro de Kronig--Penney ese caso se obtiene con $V_0=0$ y, como primera elección, $d=a/2$. El hamiltoniano se reduce a la energía cinética y la energía de las ondas planas es
 \begin{equation}
-H_{\mathrm{el}}=\frac{p^2}{2m_e},
-\end{equation}
-y la energía de las ondas planas es
-\begin{equation}
-E(\mathbf{k})=\frac{\hbar^2|\mathbf{k}|^2}{2m_e}.
+E(k)=\frac{\hbar^2 k^2}{2m_e}.
 \label{eq:libre}
 \end{equation}
 La curva~\eqref{eq:libre} es la referencia con la que se compara la banda que devuelve la ecuación~\eqref{eq:dispersion} al apagar la barrera.
 
-Si el potencial de los iones es una perturbación débil, el mismo potencial periódico se trata en la aproximación de electrón casi libre. La barrera es baja cuando $V_0$ es mucho menor que la energía cinética en el borde de la primera zona, $\hbar^2(\pi/a)^2/(2m_e)$. En esta práctica esa barrera vale $V_0=0.1$~eV.
+Si el potencial de los iones es una perturbación débil, el mismo potencial se trata en la aproximación de electrón casi libre. La barrera es baja cuando $V_0$ es mucho menor que la energía cinética en el borde de la primera zona, que con el periodo~\eqref{eq:periodo} vale $\hbar^2(\pi/a)^2/(2m_e)=6.88$~eV. En esta práctica $V_0=0.1$~eV, unas setenta veces menor.
 
-Por la periodicidad de la red, el potencial admite una serie de Fourier. El coeficiente $n$-ésimo de un potencial de periodo $T$ es
+Por la periodicidad de la red, el potencial admite una serie de Fourier de periodo $a$. En la base de ondas planas del electrón libre, $V_{\mathrm{KP}}$ solo acopla estados cuyos vectores de onda difieren en un múltiplo de $2\pi/a$. En la frontera de la zona, $k=\pi/a$, ese acoplamiento abre la primera brecha, de anchura aproximada $2|V_1|$ \cite{kittel}. El primer coeficiente, que se calcula en el apéndice, es
 \begin{equation}
-V_n=\frac{1}{T}\int_{c}^{c+T}V(x)\exp(-in\omega x)\,\mathrm{d}x,
-\qquad\omega=\frac{2\pi}{T}.
-\label{eq:fourier}
+|V_1|=\frac{V_0}{\pi}\left|\sin\!\left(\frac{\pi d}{a}\right)\right|,
+\label{eq:V1}
 \end{equation}
-En la cadena el periodo es $T=a$, así que $\omega=2\pi/a$. En la base de ondas planas del electrón libre, $V$ solo acopla estados cuyos vectores de onda difieren en un múltiplo de $2\pi/a$. 
+proporcional a $V_0$. Con $d=a/2$ se reduce a $2|V_1|=2V_0/\pi$.
 
 
 
 \section{Resultados}
 
-La comparativa entre en la estrucutura de bandas del Al en la direccion (111) se muestra en la Fig. 1, en funcion de la energía generado por nuestro script k.m. La linea azul representa la estrucutra de bandas, bajo el modelo de Kroning-Penney, mientras que la linea roja punteada el modelo del electron exacto, fek.m. Se observa como la linea azul y roja estan superpuestas hasta el valor de k = 1.5. Mientras que el modelo del electron libre muestra como la energía aumenta al aumentar la magnitud de k. Mientras que el modelo de Kroning-Penney, lo que hace es que esta contenida el valor de k para valores de $-\frac{pi}{a}\leq k\leq \frac{\pi}{a}$, lo que se concoce como es la estrucutra esqumatica, al realizar la version extendida vemos como en realidad ambas curvas se supornen, haciendo que son realemnte iguales las curvas dadas por estos modelos. Notamos que en no hya energias no tengan asociado un valor de k en el plot, i.e. no hay band gap, lo cual es esperado ya que esta aproximacion no asume interaccion entre los atomos. 
+\subsection{Electrón libre}
+
+La ecuación~\eqref{eq:dispersion} no da $E(k)$ en forma explícita, sino lo contrario: se resuelve como $k=\arccos(F)/a$, con $F=F(E)$. La variable independiente del cálculo es entonces la energía y no el vector de onda, así que las bandas se obtienen evaluando $k$ sobre una malla de energías. Para el caso del electrón libre se recorrió $E$ de $0.1$ a $30$~eV en pasos de $0.01$~eV, es decir 2991 puntos.
+
+El límite inferior no puede ser $E=0$, porque ahí $\alpha=0$ y el factor $(\alpha^2+\beta^2)/(2\alpha\beta)$ de la ecuación~\eqref{eq:dispersion} queda indeterminado. Se tomó $0.1$~eV, que corresponde a $k=0.162$~\AA$^{-1}$, apenas un $12\%$ del borde de zona $\pi/a=1.3436$~\AA$^{-1}$, de modo que no se pierde información del fondo de la banda. El límite superior se eligió para cubrir las dos primeras zonas: el borde de la primera está en $E(\pi/a)=6.88$~eV y el de la segunda en $E(2\pi/a)=27.51$~eV, así que a $30$~eV la parábola libre llega a $k=2.81$~\AA$^{-1}\approx 2.09\,\pi/a$ y alcanza a plegarse una vez completa dentro de la primera zona. El paso de $0.01$~eV solo controla la suavidad de la curva, porque con $V_0=0$ no hay brechas que resolver.
+
+Por último, $\arccos$ devuelve valores en $[0,\pi]$, de modo que la ecuación~\eqref{eq:dispersion} solo entrega $k\geq 0$. Como $E(k)=E(-k)$, la rama negativa se construye por reflexión de la positiva, y entre las dos se inserta un \texttt{NaN} para que la gráfica no las una con un segmento horizontal que no es parte de la solución.
+
+La comparación se muestra en la figura~\ref{fig:libre}. La línea azul es la estructura de bandas de Kronig--Penney con $V_0=0$, calculada con \texttt{k.m}, y la línea roja punteada es el electrón libre exacto, ecuación~\eqref{eq:libre}, calculado con \texttt{fek.m}. Las dos curvas están superpuestas hasta $k=\pi/a=1.34$~\AA$^{-1}$. A partir de ahí el electrón libre sigue creciendo monótonamente con $|k|$, mientras que Kronig--Penney devuelve siempre un $k$ dentro de $-\pi/a\leq k\leq\pi/a$: es el esquema de zona reducida, en el que la parábola libre aparece plegada. Al desplegarla al esquema extendido ambas curvas se superponen, es decir, los dos modelos dan la misma relación de dispersión. No hay ningún intervalo de energía sin un $k$ real asociado, o sea que no hay brecha; era de esperarse, porque al apagar la barrera el potencial no tiene componentes de Fourier que acoplen los estados $k$ y $k-2\pi/a$.
+
+\begin{figure}[htbp]
+\centering
+\IfFileExists{figuras/libre.png}{%
+  \includegraphics[width=0.72\linewidth]{figuras/libre.png}%
+}{%
+  \fbox{\parbox{0.72\linewidth}{\centering\vspace{2.5em}
+  Estructura de bandas con $V_0=0$\vspace{2.5em}}}%
+}
+\caption{Estructura de bandas del Al en la dirección $[111]$ con $V_0=0$. Azul: modelo de Kronig--Penney, ecuación~\eqref{eq:dispersion}, en el esquema de zona reducida. Rojo punteado: electrón libre exacto, ecuación~\eqref{eq:libre}.}
+\label{fig:libre}
+\end{figure}
 
 
 
-
-
-\section{Discusion}
+\section{Discusión}
 
 
 
@@ -167,9 +172,8 @@ La comparativa entre en la estrucutura de bandas del Al en la direccion (111) se
 
 
 
-\section{Referencias}
-
-
+% El entorno thebibliography ya pone el encabezado "Referencias" por si solo:
+% agregar \section{Referencias} aqui lo duplicaba.
 \begin{thebibliography}{99}
 \bibitem[Kronig y Penney(1931)]{kronig1931}
 R.~de~L.~Kronig and W.~G.~Penney,
@@ -183,7 +187,7 @@ C.~Kittel, \emph{Introduction to Solid State Physics}, 7.\textsuperscript{a}~ed.
 
 
 
-\section{Apendice}
+\section{Apéndice}
 
 \subsection{Fourier}
 
@@ -247,15 +251,13 @@ V_1 &= i \frac{V_0}{2\pi} \int_{0}^{-i 2\pi\left(1 - \frac{d}{a}\right)} \exp(u)
 \noindent Demostrando que en efecto es proporcional a $V_0$.
 
 
-\subsection{Parámetro de red}
+\subsection{Códigos}
 
-El primer coeficiente del potencial de Kronig--Penney es
-\begin{equation}
-V_1=\frac{1}{a}\int_{c}^{c+a}V_{\mathrm{KP}}(x)
-\exp\!\left(-i\frac{2\pi x}{a}\right)\mathrm{d}x.
-\label{eq:V1}
-\end{equation}
-En la frontera de la zona, $k=\pi/a$, ese acoplamiento abre la primera brecha. Su anchura es, aproximadamente, $2|V_1|$ \cite{kittel}.
+% Para incluir los listados hace falta \usepackage{listings} en el preambulo
+% y luego, por cada archivo:
+%   \lstinputlisting[language=Matlab,caption={kv.m}]{kv.m}
+
+\noindent Aquí van los listados de \texttt{main.mlx}, \texttt{k.m}, \texttt{kv.m}, \texttt{fek.m} y \texttt{bordes.m}.
 
 
 
