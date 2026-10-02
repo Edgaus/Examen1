@@ -1,0 +1,162 @@
+\documentclass[hidelinks]{article}
+\usepackage{Resources/UoBLab}
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{physics}
+
+\setlength{\parskip}{0pt}
+
+\pubyear{2026}
+\subjectarea{}
+
+\begin{document}
+
+\title{Examen 1}
+\author{Edgar Agustin Contreras}
+\course{Física del Estado Sólido}
+\school{Centro de Investigación y de Estudios Avanzados del IPN (CINVESTAV)}
+\date{2 de octubre de 2026}
+\keywords{estructura de bandas, modelo de Kronig--Penney, masa efectiva}
+
+\maketitle
+
+\setcounter{tocdepth}{2}
+%\tableofcontents
+
+\section{Introducción}
+
+Hoy en día, el desarrollo de dispositivos electrónicos, como los emisores de luz (LEDs), los transistores, los láseres y los paneles solares, está basado en los semiconductores. Estos materiales se distinguen por una brecha de energía entre la banda de valencia y la de conducción. Ante una perturbación, como un campo eléctrico o un esfuerzo mecánico, sus propiedades ópticas y eléctricas se modifican.
+
+La herramienta más usada para describir ese comportamiento es la estructura de bandas, que relaciona la energía de los electrones con su vector de onda cristalino $\mathbf{k}$. El análisis y el cálculo de esta relación permiten entender el material, por lo que el modelado resulta importante.
+
+El modelado de un sistema de muchas partículas es, sin embargo, un problema muy complejo, así que hace falta introducir simplificaciones. Una consiste en colocar los átomos en un arreglo periódico, descrito por una red de Bravais. Otra simplifica el problema a los electrones de valencia en el potencial de los iones: esos electrones son, en general, los responsables de las propiedades electrónicas del sólido.
+
+En este trabajo se calcula la estructura de bandas de una cadena monoatómica de aluminio metálico orientada en la dirección $[111]$, esto es, la dirección que atraviesa los planos de mayor empaquetamiento, los planos $(111)$. El cálculo usa el modelo de Kronig--Penney y, como casos particulares, el electrón libre y el electrón casi libre.
+
+\section{Metodología}
+
+Las simulaciones se hicieron en MATLAB R2024b. Las longitudes se expresan en ångströms, el vector de onda en \AA$^{-1}$ y la energía en eV. Con ese sistema de unidades, la masa del electrón y $\hbar$ se introducen con los valores numéricos de la práctica, de modo que $k=\sqrt{2m_e E}/\hbar$ queda directamente en \AA$^{-1}$. El periodo del modelo no es la constante de red cúbica del aluminio, $a_{\mathrm{Al}}=4.05$~\AA, sino la distancia entre planos $(111)$:
+\begin{equation}
+a=\frac{a_{\mathrm{Al}}}{\sqrt{3}}.
+\end{equation}
+El script sigue el desarrollo que se resume a continuación.
+
+\subsection{Modelo de Kronig--Penney}
+
+El modelo de Kronig--Penney trata un solo electrón en un cristal unidimensional \cite{kronig1931}. El potencial de los iones se sustituye por un potencial periódico y constante a trozos, lo que permite una solución analítica. En cada periodo hay dos regiones, como se muestra en la figura~\ref{fig:kp}. La región~II coincide con los iones y la región~I con el espacio entre ellos. El periodo es $a=d+s$.
+
+\begin{figure}[htbp]
+\centering
+\IfFileExists{../../../../Pictures/Screenshots/Screenshot 2026-10-01 220916.png}{%
+  \includegraphics[width=0.72\linewidth]{../../../../Pictures/Screenshots/Screenshot 2026-10-01 220916.png}%
+}{%
+  \fbox{\parbox{0.72\linewidth}{\centering\vspace{2.5em}
+  Potencial periódico de Kronig--Penney\vspace{2.5em}}}%
+}
+\caption{Potencial del modelo de Kronig--Penney. La región~I, entre iones, es una barrera de altura $V_0$ y ancho $s$. La región~II, sobre los iones, es un pozo de potencial nulo y ancho $d$. El periodo es $a=d+s$.}
+\label{fig:kp}
+\end{figure}
+
+La función de onda satisface la ecuación de Schrödinger
+\begin{equation}
+H\psi=
+\left(-\frac{\hbar^2}{2m_e}\frac{d^2}{dx^2}+V_{\mathrm{KP}}(x)\right)\psi
+=E\psi.
+\label{eq:schrodinger}
+\end{equation}
+El cero de la energía es arbitrario. Con el origen de la figura~\ref{fig:kp}, el potencial de un periodo se escribe
+\begin{equation}
+V_{\mathrm{KP}}(x)=
+\begin{cases}
+V_0, & an \leq x \leq an+s, \quad n\in\mathbb{Z},\\
+0, & \text{en el resto del periodo,}
+\end{cases}
+\label{eq:potencial}
+\end{equation}
+donde el ancho de la barrera es $s=a-d$ y el del pozo es $d$. La región~I es la barrera y la región~II es el pozo.
+
+En cada región la solución general es una combinación de ondas planas. Para $E>V_0$,
+\begin{equation}
+\begin{aligned}
+\psi_{\mathrm{I}}(x)
+&=A\exp[i\beta x]+B\exp[-i\beta x],
+&\beta&=\frac{\sqrt{2m_e(E-V_0)}}{\hbar},\\[4pt]
+\psi_{\mathrm{II}}(x)
+&=C\exp[i\alpha x]+D\exp[-i\alpha x],
+&\alpha&=\frac{\sqrt{2m_e E}}{\hbar}.
+\end{aligned}
+\label{eq:ondas}
+\end{equation}
+Si $E<V_0$, $\beta$ es imaginario: en la barrera las ondas pasan a ser exponenciales reales. La relación de dispersión que se obtiene más abajo sigue siendo válida en ese caso.
+
+Los coeficientes $A$, $B$, $C$ y $D$ quedan ligados por las condiciones de frontera. Tanto $\psi$ como $d\psi/dx$ son continuas en la interfaz entre las regiones~I y~II. La normalización,
+\begin{equation}
+\int_{0}^{L}\psi^{*}\psi\,\mathrm{d}x=1,
+\end{equation}
+solo fija la escala global de la función de onda; no determina las energías permitidas.
+
+Como el potencial es periódico, el teorema de Bloch escribe cada estado estacionario en la forma
+\begin{equation}
+\psi_k(x)=u_k(x)\exp(ikx),
+\label{eq:bloch}
+\end{equation}
+donde $u_k(x)$ tiene la periodicidad del cristal, $u_k(x)=u_k(x+a)$. De aquí se sigue que una traslación de un periodo solo multiplica la función de onda por una fase,
+\begin{equation}
+\psi_k(x+a)=\psi_k(x)\exp(ika),
+\end{equation}
+y lo mismo ocurre con su derivada. Continuidad y condición de Bloch forman un sistema homogéneo para $A$, $B$, $C$ y $D$. Hay soluciones distintas de la trivial solo si el determinante se anula, y esa condición relaciona la energía con $k$:
+\begin{equation}
+\begin{aligned}
+\cos(ka)&=F,\\
+F&=\cos(\alpha d)\cos(\beta s)
+-\frac{\alpha^2+\beta^2}{2\alpha\beta}\sin(\alpha d)\sin(\beta s).
+\end{aligned}
+\label{eq:dispersion}
+\end{equation}
+$E$ entra en~\eqref{eq:dispersion} a través de $\alpha$ y $\beta$.
+
+Cuando $|F|\leq 1$ existe un $k$ real y el estado es una onda de Bloch que se propaga por la cadena. En la primera zona de Brillouin, $-\pi/a\leq k\leq\pi/a$. El borde de banda es $|F|=1$, es decir $k=0$ o $k=\pm\pi/a$. Cuando $|F|>1$ no hay $k$ real: no hay electrones de Bloch propagantes y ese intervalo de energía es una brecha del modelo. El vector de onda es entonces imaginario.
+
+\subsection{Electrón libre y electrón casi libre}
+
+En el modelo de electrón libre los electrones no sienten el potencial de los iones, de modo que $V_0=0$. Dentro de Kronig--Penney ese caso se obtiene con $V_0=0$ y, como primer elección, $d=a/2$. El hamiltoniano de un electrón se reduce a la energía cinética,
+\begin{equation}
+H_{\mathrm{el}}=\frac{p^2}{2m_e},
+\end{equation}
+y la energía de las ondas planas es
+\begin{equation}
+E(\mathbf{k})=\frac{\hbar^2|\mathbf{k}|^2}{2m_e}.
+\label{eq:libre}
+\end{equation}
+La curva~\eqref{eq:libre} es la referencia con la que se compara la banda que devuelve la ecuación~\eqref{eq:dispersion} al apagar la barrera.
+
+Si el potencial de los iones es una perturbación débil, el mismo potencial periódico se trata en la aproximación de electrón casi libre. La barrera es baja cuando $V_0$ es mucho menor que la energía cinética en el borde de la primera zona, $\hbar^2(\pi/a)^2/(2m_e)$. En esta práctica esa barrera vale $V_0=0.1$~eV.
+
+Por la periodicidad de la red, el potencial admite una serie de Fourier. El coeficiente $n$-ésimo de un potencial de periodo $T$ es
+\begin{equation}
+V_n=\frac{1}{T}\int_{c}^{c+T}V(x)\exp(-in\omega x)\,\mathrm{d}x,
+\qquad\omega=\frac{2\pi}{T}.
+\label{eq:fourier}
+\end{equation}
+En la cadena el periodo es $T=a$, así que $\omega=2\pi/a$. En la base de ondas planas del electrón libre, $V$ solo acopla estados cuyos vectores de onda difieren en un múltiplo de $2\pi/a$. El primer coeficiente del potencial de Kronig--Penney es
+\begin{equation}
+V_1=\frac{1}{a}\int_{c}^{c+a}V_{\mathrm{KP}}(x)
+\exp\!\left(-i\frac{2\pi x}{a}\right)\mathrm{d}x.
+\label{eq:V1}
+\end{equation}
+En la frontera de la zona, $k=\pi/a$, ese acoplamiento abre la primera brecha. Su anchura es, aproximadamente, $2|V_1|$ \cite{kittel}.
+
+\section{Resultados}
+
+\begin{thebibliography}{9}
+\bibitem{kronig1931}
+R.~de~L.~Kronig and W.~G.~Penney,
+Proc.~R.~Soc.~Lond.~A \textbf{130}, 499 (1931).
+\bibitem{kittel}
+C.~Kittel, \emph{Introduction to Solid State Physics}, 7.\textsuperscript{a}~ed.
+(John Wiley \& Sons, New York).
+\end{thebibliography}
+
+\end{document}
