@@ -8,10 +8,10 @@ function ik = kv(E)
     E(E <= 0) = eps;                        % evita alpha = 0  -> 0/0
     E(abs(E - V0) < 1e-12) = V0 + 1e-12;    % evita beta  = 0  -> 0/0
 
-    alpha = sqrt( 2*me.*E/hbar^2   );
-    beta =  sqrt( 2*me.*(E-V0)/hbar^2   );
+    alpha = sqrt( 2*me.*E/hbar^2   );       % region II: pozo de ancho d
+    beta =  sqrt( 2*me.*(E-V0)/hbar^2   );  % region I:  barrera de ancho s
 
-    F = cos(beta.*d).*cos(alpha.*s) - ((beta.^2 + alpha.^2)./(2.*alpha.*beta)).*sin(beta.*d).*sin(alpha.*s);
+    F = cos(alpha.*d).*cos(beta.*s) - ((beta.^2 + alpha.^2)./(2.*alpha.*beta)).*sin(alpha.*d).*sin(beta.*s);
     ik = acos(F) ./ a;
 end
 

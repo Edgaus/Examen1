@@ -1,15 +1,8 @@
 function [rkvE, ikvE] = k(E)
-    
-    kE=kv(E); 
+
+    kE   = kv(E);
     ikvE = imag(kE);
+    rkvE = real(kE);
+    rkvE(abs(ikvE) > 1e-10) = NaN;   % brecha: k complejo, no hay Bloch propagante
 
-    for j=1:1:length(kE) 
-        if (abs(kE(j)) ~= real(kE(j))) % returns NaN in 
-            kE(j)=NaN; % the band gap 
-        end
-        
-    end
-    rkvE =  kE;
 end
-
-
