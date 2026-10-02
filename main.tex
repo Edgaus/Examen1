@@ -1,38 +1,14 @@
 \documentclass[hidelinks]{article}
 \usepackage{Resources/UoBLab}
 \usepackage[spanish]{babel}
-\spanishdeactivate{<>}% listings: el código MATLAB usa <=, >= y <>
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{physics}
 \usepackage{booktabs}
 \usepackage{graphicx}
-\usepackage{listings}
-\usepackage{xcolor}
 
 \graphicspath{{figures/}}
-\lstdefinestyle{matlab}{
-  language=Matlab,
-  basicstyle=\ttfamily\scriptsize,
-  breaklines=true,
-  breakatwhitespace=false,
-  columns=fullflexible,
-  keepspaces=true,
-  showstringspaces=false,
-  frame=single,
-  float=false,
-  rulecolor=\color{black!30},
-  backgroundcolor=\color{black!3},
-  commentstyle=\color{gray},
-  keywordstyle=\bfseries\color{blue!70!black},
-  morecomment=[l]{\%},
-  literate=
-    {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
-    {ñ}{{\~n}}1 {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
-    {ü}{{\"u}}1 {Å}{{\AA}}1 {å}{{\aa}}1,
-}
-\lstset{style=matlab}
 
 \setlength{\parskip}{0pt}
 
@@ -342,13 +318,12 @@ $|V_1|$ es proporcional a $V_0$. En el borde de zona, $k=\pi/a$, ese acoplamient
 \section{Códigos de MATLAB}
 \label{ap:codigo}
 
-A continuación se reproduce el código MATLAB usado en este trabajo.
+Código MATLAB usado en este trabajo, copiado tal cual de cada archivo.
 El live script \texttt{main.mlx} es equivalente a \texttt{main.m}.
-Al ejecutar \texttt{main.m} se escriben las figuras en \texttt{figures/}.
 
 \subsection{\texttt{kv.m}}
 Relación de dispersión, ecuación (10).
-\begin{lstlisting}
+\begin{verbatim}
 % kv(E)
 % kv(E) calcula k a partir de la ecuacion (10) del guion.
 %
@@ -371,11 +346,11 @@ function ik = kv(E)
     F = cos(alpha.*d).*cos(beta.*s) - ((alpha.^2 + beta.^2)./(2.*alpha.*beta)).*sin(alpha.*d).*sin(beta.*s);
     ik = acos(F) ./ a;
 end
-\end{lstlisting}
+\end{verbatim}
 
 \subsection{\texttt{k.m}}
 Parte real e imaginaria de k(E), como en el guion.
-\begin{lstlisting}
+\begin{verbatim}
 function [rkvE, ikvE] = k(E)
     
     kE=kv(E); 
@@ -389,11 +364,11 @@ function [rkvE, ikvE] = k(E)
     end
     rkvE =  kE;
 end
-\end{lstlisting}
+\end{verbatim}
 
 \subsection{\texttt{kext.m}}
 Esquema de zona extendida.
-\begin{lstlisting}
+\begin{verbatim}
 % kext
 % kext(E) devuelve el vector de onda en el esquema de zona extendida.
 %
@@ -446,11 +421,11 @@ function kE = kext(E)
         end
     end
 end
-\end{lstlisting}
+\end{verbatim}
 
 \subsection{\texttt{fek.m}}
 Electrón libre exacto.
-\begin{lstlisting}
+\begin{verbatim}
 % Free electons model exact
 
 function fekE = fek(E)
@@ -460,12 +435,11 @@ function fekE = fek(E)
     fekE = sqrt(2*me.*E/hbar^2);
 
 end
-
-\end{lstlisting}
+\end{verbatim}
 
 \subsection{\texttt{bordes.m}}
 Localización de los bordes de la primera brecha.
-\begin{lstlisting}
+\begin{verbatim}
 % bordes: fondo y techo de la 1a banda y fondo de la 2a banda, localizados a
 % partir de los NaN que k(E) ya pone dentro de la brecha.
 function [Efondo, Etecho, E2abanda] = bordes(E)
@@ -476,11 +450,11 @@ function [Efondo, Etecho, E2abanda] = bordes(E)
     i2 = ig - 1 + find(~h(ig:end), 1);     % primer punto de la 2a banda
     Efondo = E(i1);  Etecho = E(ig-1);  E2abanda = E(i2);
 end
-\end{lstlisting}
+\end{verbatim}
 
 \subsection{\texttt{main.m}}
 Script principal: los cinco casos de la práctica.
-\begin{lstlisting}
+\begin{verbatim}
 % main.m
 % Estructura de bandas de Al [111] con el modelo de Kronig-Penney.
 % Equivalente al live script main.mlx.
@@ -678,6 +652,6 @@ function guardarfig(fig, archivo)
         warning('No se pudo guardar %s: %s', archivo, ME.message);
     end
 end
-\end{lstlisting}
+\end{verbatim}
 
 \end{document}
