@@ -1,0 +1,81 @@
+Texto marcado en rojo en "Primer Examen.pdf"
+============================================
+
+Fuente: Primer Examen.pdf (Kronig-Penney Model).
+En la portada se pide responder las preguntas marcadas en color rojo.
+Esas preguntas están resaltadas en rosa/rojo en las páginas 8, 9 y 10.
+El texto de abajo es el del PDF, en inglés. Los títulos de sección no están
+resaltados; se dejan aquí solo para ubicar cada pregunta.
+
+
+Página 8 — The free-electron model
+----------------------------------
+
+Write a function to calculate the band structure for free electrons and compare
+with the band structure obtained by the KP model. You can add graphs into an
+existing figure window by use of the command hold on. hold on can be switched
+off again by hold off. Can you observe any difference?
+
+
+Página 8 — Nearly free electrons
+--------------------------------
+
+Now raise the potential barrier to 0.1 eV. Why is this a low barrier – to which
+quantity should you compare in order to decide whether the barrier is low or
+high?
+
+Can you find any energy gap between the first and second band? – Zoom into the
+figure in order to determine the size of the bandgap. Note that you will obtain
+too large a value if you plot in large steps.
+
+Nota: el resaltado de esa última línea termina en "steps." Lo que sigue, en la
+misma línea y sin pintar, es: "Steps of 0.1 eV, e.g., are too large here."
+
+
+Página 9 — Nearly free electrons (continúa)
+-------------------------------------------
+
+Calculate V1 and compare 2|V1| with the value that you obtained from your plot.
+When you calculate 2|V1|, you will see that the increase of the band gap is
+proportional to V0. Set V_0 = 0.2 and check whether this is true for your KP
+model.
+
+
+Página 9 — Band structure for stronger potential
+------------------------------------------------
+
+Consider now stronger potential wells by increasing V0 to 5 eV and reducing d
+to 1 Å. Plot the band structure for energies from 0 to 35 eV. Have the band
+gaps increased in size? By which factor has the first gap increased?
+
+
+Página 9 — Surface states
+-------------------------
+
+Plot the imaginary part of k[E]. To this end, implement a function imk(E) that
+calculates the imaginary part of the wave vector. Comment on your results. (You
+can compare your results to Figure 12 on page 196 in the textbook by Kittel,
+seventh edition). Over how many atomic layers does a surface state extend in
+the center of the first bandgap?
+
+
+Página 10 — Group velocity
+--------------------------
+
+What is the maximum vg, expressed in percents of the velocity of light?
+Can you give a physical explanation for this behaviour of vg when approaching
+the boundary of the Brillouin zone?
+
+
+Página 10 — Effective mass
+--------------------------
+
+Calculate the effective mass normalized to the mass of a free electron as a
+function of the energy and discuss the results. Give a physical interpretation
+of the change in sign of the effective mass. The effective mass is defined as
+
+Nota: la ecuación (15) no está dentro del resaltado. El enunciado queda así:
+
+    m* = ( (1/hbar^2) * d^2(epsilon)/dk^2 )^(-1)          (15)
+
+que es lo mismo que m* = hbar^2 / (d^2 epsilon / dk^2).
