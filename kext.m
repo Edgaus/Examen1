@@ -1,27 +1,52 @@
 % kext
 % kext(E) devuelve el vector de onda en el esquema de zona extendida.
+%
+% En una banda k es real. La banda n ocupa [(n-1)*pi/a, n*pi/a]:
+%   n impar:  k = (n-1)*pi/a + kr
+%   n par:    k = n*pi/a     - kr
+%
+% En una brecha k es imaginario. Esa brecha cierra contra el borde
+% n*pi/a, asi que se despliega como
+%   k = n*pi/a + i*Im(k)
+% con el signo de Im(k) que ya trae acos. Si no hay brechas, la salida
+% sigue siendo real.
 
 function kE = kext(E)
 
     global a
 
-    kr = k(E);
+    [kr, ki] = k(E);
     kE = nan(size(kr));
     kb = pi/a;
 
-    val = reshape(find(~isnan(kr)), 1, []);
-    if isempty(val)
+    permitido = reshape(~isnan(kr), 1, []);
+    N = numel(kr);
+    if N == 0
         return
     end
 
-    % Cortes por brecha: val deja de ser consecutivo.
-    corte = [1, reshape(find(diff(val) ~= 1) + 1, 1, []), numel(val) + 1];
-
+    % n es el numero de bandas ya recorridas: la brecha siguiente
+    % pertenece al borde n*pi/a.
     n = 0;
-    for t = 1:numel(corte) - 1
-        tramo = val(corte(t):corte(t+1) - 1);
+    i = 1;
+    while i <= N
+        if ~permitido(i)
+            j = i;
+            while j <= N && ~permitido(j)
+                j = j + 1;
+            end
+            idx = i:j-1;
+            kE(idx) = n*kb + 1i .* ki(idx);
+            i = j;
+            continue
+        end
 
-        % Cortes por borde de zona: kr cambia de sentido.
+        j = i;
+        while j <= N && permitido(j)
+            j = j + 1;
+        end
+        tramo = i:j-1;
+
         if numel(tramo) >= 3
             s = sign(diff(kr(tramo)));
             s(s == 0) = 1;
@@ -31,13 +56,18 @@ function kE = kext(E)
         end
 
         for u = 1:numel(sub) - 1
-            idx = tramo(sub(u):sub(u+1) - 1);
+            sel = tramo(sub(u):sub(u+1) - 1);
             n = n + 1;
             if mod(n, 2) == 1
-                kE(idx) = (n-1)*kb + kr(idx);
+                kE(sel) = (n-1)*kb + kr(sel);
             else
-                kE(idx) = n*kb - kr(idx);
+                kE(sel) = n*kb - kr(sel);
             end
         end
+        i = j;
+    end
+
+    if all(isnan(kE(:)) | abs(imag(kE(:))) < 1e-10)
+        kE = real(kE);
     end
 end
