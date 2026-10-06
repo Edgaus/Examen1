@@ -18,6 +18,10 @@ V0 = 0;                    % electron libre
 set(groot, 'defaultLineLineWidth', 2)
 set(groot, 'defaultAxesLineWidth', 1)
 set(groot, 'defaultAxesFontSize', 17)
+% El default de MATLAB es una ventana apaisada (~560x420). Con dos paneles
+% apilados cada eje queda muy horizontal. 520x880 deja la figura en vertical.
+set(groot, 'defaultFigureUnits', 'pixels');
+set(groot, 'defaultFigurePosition', [60 40 520 880]);
 
 %% Electron libre: zona reducida y zona extendida
 V0 = 0;
