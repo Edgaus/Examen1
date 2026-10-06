@@ -1,0 +1,107 @@
+Correcciones mínimas de new.tex
+================================
+
+Sustituye solo el fragmento de cada apartado. El resto del archivo no cambia.
+
+Los números del reporte se quedan: brechas, 2|V1|, decaimiento, vg y masa.
+Lo que se corrige es redacción rota y estas afirmaciones:
+- la onda dentro de la brecha;
+- que 6.877 eV sea un máximo de energía;
+- que V0 = 0.1 eV confine y localice al electrón;
+- que la diferencia entre Eg y 2|V1| sea de 1 meV (queda por debajo).
+
+
+1. Metodología. Onda con k imaginario
+--------------------------------------
+Reemplaza desde "Sin embargo, en el caso de que sea imaginario"
+hasta "decaye hacia el interior del cristal."
+
+Si $k$ es imaginario, la onda no puede estar deslocalizada en todo el cristal: su amplitud crecería hasta el infinito en una dirección. Con $k=i\kappa$ la solución es
+\begin{equation}
+\label{eqn:imagkfunc}
+\psi(x)=A\exp(-\kappa x)+B\exp(\kappa x).
+\end{equation}
+Es solución de~\eqref{eq:schrodinger} dentro de la brecha. En un cristal semiinfinito, $B=0$ deja la onda que decae hacia el interior.
+
+
+2. Metodología. Nombre de la brecha
+------------------------------------
+En el párrafo de |F| > 1, reemplaza "brecha de energía de prohibida" por:
+
+brecha prohibida
+
+La frase queda: ese intervalo de energía es una brecha prohibida.
+
+
+3. Metodología. Energía en el borde de zona
+--------------------------------------------
+Reemplaza "La ecuacion anterior define un máximo de energía para un electron en la primera zona de Brilloiun ($k=\pi/a$), que para un caso unidimensional" por:
+
+La ecuación anterior da la energía del electrón libre en el borde de la primera zona de Brillouin ($k=\pi/a$). En una dimensión,
+
+La ecuación de 6.877 eV se queda igual. Ese valor es E(pi/a), no un máximo de la banda.
+
+
+4. Resultados. Electrón libre, frase rota
+------------------------------------------
+Reemplaza "Con $V_0=0$ no hay brecha de energía: $E_g=0$.  es real, dado que no aparece ningún \texttt{NaN} en el array devuelt por $\texttt{k.m	}$." por:
+
+Con $V_0=0$ no hay brecha: $E_g=0$. En toda la malla $k(E)$ es real, así que \texttt{k.m} no devuelve ningún \texttt{NaN}.
+
+
+5. Resultados. Estados de superficie, párrafo de apertura
+----------------------------------------------------------
+Reemplaza los dos párrafos que empiezan en "El análisis de los vectores de k complejos" y "Podemos ver en la figura" por:
+
+Los $k$ complejos se describen con~\eqref{eqn:imagkfunc}, tomando $B=0$. Con eso se estima la longitud de decaimiento y el número de monocapas. En la figura~\ref{fig:imag} la línea azul es $\operatorname{Re}k$ en las bandas y la roja es $|\operatorname{Im}k|$ en las brechas, uniendo los bordes de banda. El resultado es análogo al de Kittel, figura 12 del capítulo 7 \cite{kittel}.
+
+El párrafo numérico (E = 9.690 eV, |Im k| = 0.153 Å^{-1}, 6.55 Å, 2.80 capas) se queda igual.
+
+
+6. Resultados. Etiqueta de la figura de superficie
+---------------------------------------------------
+En el entorno de superficie.png, mueve \label{fig:imag} para que quede después de \caption. Así:
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[width=\columnwidth]{Figures/superficie.png}
+\caption{Estados de superficie en la zona extendida, $V_0=5\,\mathrm{eV}$, $d=1\,\text{Å}$. En azul, $\operatorname{Re}k$ en las bandas. En rojo, $|\operatorname{Im}k|$ medido desde el borde de zona $n\pi/a$.}
+\label{fig:imag}
+\end{figure}
+
+
+7. Resultados. Unidades de vg
+------------------------------
+Reemplaza "alcanza un máximo de $1.515\times 10^{16}$ \AA, el $0.505\%$ de $c$" por:
+
+alcanza un máximo de $1.515\times 10^{16}\,\text{Å/s}$, el $0.505\,\%$ de $c$
+
+
+8. Discusión. Párrafo del electrón casi libre
+----------------------------------------------
+Reemplaza el párrafo que empieza en "Al existir una barrera el electron sufre de confinamiento" por:
+
+$V_0=0.1\,\mathrm{eV}$ es una barrera baja porque hay que compararla con la energía cinética en el borde de zona, $E(\pi/a)=6.877\,\mathrm{eV}$, ecuación~\eqref{eq:eborde}. Como $E\propto k^2$, los estados $k=\pi/a$ y $k=-\pi/a$ están degenerados si $V_0=0$. El coeficiente $V_1$ los acopla y la degeneración se abre en $2|V_1|$ \cite{simon}. La ecuación~\eqref{eq:V1mod} es proporcional a $V_0$, así que al pasar de $0.1$ a $0.2\,\mathrm{eV}$ la brecha se duplica. En la tabla~\ref{tab:gaps} la diferencia entre $E_g$ y $2|V_1|$ queda por debajo del milielectrónvolt.
+
+
+9. Discusión. Paréntesis del potencial fuerte
+----------------------------------------------
+Cierra el paréntesis. Reemplaza
+
+($3.101\,\mathrm{eV}$ frente a $3.140\,\mathrm{eV}$.
+
+por
+
+($3.101\,\mathrm{eV}$ frente a $3.140\,\mathrm{eV}$).
+
+
+10. Conclusiones. Dos erratas
+------------------------------
+Brilluin  ->  Brillouin
+Se encontr'o  ->  Se encontró
+
+
+11. Bibliografía
+----------------
+Borra la línea \section{Referencias} que está dentro de thebibliography.
+Deja \begin{thebibliography} y los \bibitem como están.
